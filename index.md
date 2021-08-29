@@ -6,6 +6,7 @@
     途中で放置されていたり、間違いに気づいていなかったりするものがあるはずです。
     なにかあれば自分の<a href="https://twitter.com/ryo_Iridium">ツイッター</a>に連絡ください。
     <ul>  
+       <br>
         <li>
           <a href="PDF/adicspace.pdf">Adic空間論のノート</a>
        <br>
