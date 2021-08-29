@@ -1,9 +1,4 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="stylesheet.css">
-    <meta charset="utf-8">
-  </head>
   <body>
     <h1 class="title">PDF置き場</h1>
     自分が今までに書いたPDFを一覧で見れる場所がほしいと思い、ほぼ自分のためだけでまとめました。
