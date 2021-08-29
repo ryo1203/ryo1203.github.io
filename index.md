@@ -3,7 +3,6 @@
   <head>
     <link rel="stylesheet" href="stylesheet.css">
     <meta charset="utf-8">
-    <title>ryo1203.github.io</title>
   </head>
   <body>
     <h1 class="title">PDF置き場</h1>
@@ -12,6 +11,7 @@
     途中で放置されていたり、間違いに気づいていなかったりするものがあるはずです。
     なにかあれば自分の<a href="https://twitter.com/ryo_Iridium">ツイッター</a>に連絡ください。
     <ul>
+       <br>
         <li>
           <a href="PDF/adicspace.pdf">Adic空間論のノート</a>
           <br>
@@ -21,6 +21,7 @@
           <br>
           最終更新：2021/8/29 公開
         </li>
+       <br>
         <li>
           <a href="PDF/SGA45.pdf">SGA4 1/2 一章 Cohomologie ´etale : les points de d´epartの和訳</a>
           <br>
@@ -32,6 +33,7 @@
           <br>
           最終更新：2021/8/29 公開
         </li>
+      <br>
         <li>
           <a href="PDF/zariskisheaf.pdf">ザリスキー層の表現可能性について</a>
           <br>
@@ -41,6 +43,7 @@
           <br>
           最終更新：2021/8/29 公開
         </li>
+      <br>
         <li>
           <a href="PDF/scheme_intro.pdf">スキーム論の概形</a>
           <br>
@@ -50,6 +53,7 @@
           <br>
           公開日：2021/8/29 公開
         </li>
+      <br>
         <li>
           <a href="PDF/group_cohomology.pdf">群のコホモロジーの長完全列とHilbertの定理90について</a>
           <br>
@@ -59,6 +63,7 @@
           <br>
           公開日：2021/8/29 公開
         </li>
+      <br>
         <li>
           <a href="PDF/galois_theory.pdf">ガロア理論のノート</a>
           <br>
@@ -69,6 +74,7 @@
           <br>
           公開日：2021/8/29 公開
         </li>
+      <br>
     </ul>
   </body>
 </html>
