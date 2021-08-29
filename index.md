@@ -1,6 +1,6 @@
  <html>
   <body>
-    <h1 class="title">PDF置き場</h1>
+    <h2 class="title">PDF置き場</h2>
     自分が今までに書いたPDFを一覧で見れる場所がほしいと思い、ほぼ自分のためだけでまとめました。
     上に行くほど最近のものです。
     途中で放置されていたり、間違いに気づいていなかったりするものがあるはずです。
@@ -69,6 +69,15 @@
           公開日：2021/8/29 公開
         </li>
       <br>
+    </ul>
+   <h2 class="title">よく使うリンク</h2>
+    <ul>
+      <li><a href="http://www.math.titech.ac.jp">東工大数学系ホームページ</a></li>
+      <li><a href="http://www.ocw.titech.ac.jp/index.php?module=General&action=T0200&GakubuCD=1&GakkaCD=311100&KeiCD=11&tab=2&focus=200&lang=JA">東工大OCWの数学系のページ</a></li>
+      <li><a href="https://www.searchonmath.com">search on math</a></li>
+      <li><a href="https://tikzcd.yichuanshen.de">tikzcd editor</a></li>
+      <li><a href="https://www.zbmath.org">zbMATH</a></li>
+      <li><a href="https://mathscinet.ams.org/mathscinet/index.html">mathscinet</a></li>
     </ul>
   </body>
 </html>
