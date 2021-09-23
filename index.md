@@ -4,7 +4,7 @@
     自分が今までに書いたPDFを一覧で見れる場所がほしいと思い、ほぼ自分のためだけでまとめました。
     上に行くほど最近のものです。
     途中で放置されていたり、間違いに気づいていなかったりするものがあるはずです。
-    なにかあれば自分の<a href="https://twitter.com/ryo_Iridium">ツイッター</a>に連絡ください。
+    なにかあれば自分の<a href="https://twitter.com/ryo_Iridium" target="_blank" rel="noopener noreferrer">ツイッター</a>に連絡ください。
     <ul>  
        <br>
         <li>
@@ -27,7 +27,7 @@
           <strong>知識不足と期間が空いてしまった影響で未完成です。
           やる気が復活する確率は低そうです。</strong>
           誰か引き継いでくれる人が居たら.texファイルからお譲りいたします。
-          原文はEGAやSGAが公式に公開されている<a href="http://library.msri.org/books/sga/sga/index.html">サイト</a>からスキャンされたものが閲覧できます。
+          原文はEGAやSGAが公式に公開されている<a href="http://library.msri.org/books/sga/sga/index.html" target="_blank" rel="noopener noreferrer">サイト</a>からスキャンされたものが閲覧できます。
           <br>
           更新履歴：2021/8/29 公開
         </li>
@@ -76,12 +76,12 @@
     </ul>
    <h2 class="title">よく使うリンク</h2>
     <ul>
-      <li><a href="http://www.math.titech.ac.jp">東工大数学系ホームページ</a></li>
-      <li><a href="http://www.ocw.titech.ac.jp/index.php?module=General&action=T0200&GakubuCD=1&GakkaCD=311100&KeiCD=11&tab=2&focus=200&lang=JA">東工大OCWの数学系のページ</a></li>
-      <li><a href="https://www.searchonmath.com">search on math</a></li>
-      <li><a href="https://tikzcd.yichuanshen.de">tikzcd editor</a></li>
-      <li><a href="https://www.zbmath.org">zbMATH</a></li>
-      <li><a href="https://mathscinet.ams.org/mathscinet/index.html">mathscinet</a></li>
+      <li><a href="http://www.math.titech.ac.jp" target="_blank" rel="noopener noreferrer">東工大数学系ホームページ</a></li>
+      <li><a href="http://www.ocw.titech.ac.jp/index.php?module=General&action=T0200&GakubuCD=1&GakkaCD=311100&KeiCD=11&tab=2&focus=200&lang=JA" target="_blank" rel="noopener noreferrer">東工大OCWの数学系のページ</a></li>
+      <li><a href="https://www.searchonmath.com" target="_blank" rel="noopener noreferrer">search on math</a></li>
+      <li><a href="https://tikzcd.yichuanshen.de" target="_blank" rel="noopener noreferrer">tikzcd editor</a></li>
+      <li><a href="https://www.zbmath.org" target="_blank" rel="noopener noreferrer">zbMATH</a></li>
+      <li><a href="https://mathscinet.ams.org/mathscinet/index.html" target="_blank" rel="noopener noreferrer">mathscinet</a></li>
     </ul>
   </body>
 </html>
