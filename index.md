@@ -80,6 +80,7 @@
       <li><a href="http://www.ocw.titech.ac.jp/index.php?module=General&action=T0200&GakubuCD=1&GakkaCD=311100&KeiCD=11&tab=2&focus=200&lang=JA" target="_blank" rel="noopener noreferrer">東工大OCWの数学系のページ</a></li>
       <li><a href="https://www.searchonmath.com" target="_blank" rel="noopener noreferrer">search on math</a></li>
       <li><a href="https://tikzcd.yichuanshen.de" target="_blank" rel="noopener noreferrer">tikzcd editor</a></li>
+     <li><a href="https://www.connectedpapers.com" target="_blank" rel="noopener noreferrer">connected papers</a></li>
       <li><a href="https://www.zbmath.org" target="_blank" rel="noopener noreferrer">zbMATH</a></li>
       <li><a href="https://mathscinet.ams.org/mathscinet/index.html" target="_blank" rel="noopener noreferrer">mathscinet</a></li>
     </ul>
