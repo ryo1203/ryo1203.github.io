@@ -5,9 +5,8 @@
     上に行くほど最近のものです。
     途中で放置されていたり、間違いに気づいていなかったりするものがあるはずです。
     なにかあれば自分の<a href="https://twitter.com/ryo_Iridium" target="_blank" rel="noopener noreferrer">ツイッター</a>に連絡ください。
- 
-    <ul>  
-      <br>
+    <ul>
+     <br>
          <li>
           <a href="PDF/counterexample.pdf">局所化が体か離散付値環だがネーターでも整域でもない被約連結環</a>
        <br>
