@@ -1,5 +1,4 @@
 theme: jekyll-theme-slate
 title: ryo1203.github.io
-google_analytics: G-QXT9306D5J
 plugins:
  - jekyll-sitemap
