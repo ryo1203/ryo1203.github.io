@@ -2,3 +2,4 @@ theme: jekyll-theme-slate
 title: ryo1203.github.io
 plugins:
  - jekyll-sitemap
+google_analytics: UA-217438842-1
