@@ -114,6 +114,7 @@
     <ul>
       <li><a href="http://www.math.titech.ac.jp" target="_blank" rel="noopener noreferrer">東工大数学系ホームページ</a></li>
       <li><a href="http://www.ocw.titech.ac.jp/index.php?module=General&action=T0200&GakubuCD=1&GakkaCD=311100&KeiCD=11&tab=2&focus=200&lang=JA" target="_blank" rel="noopener noreferrer">東工大OCWの数学系のページ</a></li>
+      <li><a href="http://www.ocw.titech.ac.jp/index.php?module=General&action=T0200&GakubuCD=1&GakkaCD=311111&KeiCD=11&course=11&tab=2&focus=400&lang=JA" target="_blank" rel="noopener noreferrer">東工大OCWの数学コースのページ</a></li>
       <li><a href="https://www.searchonmath.com" target="_blank" rel="noopener noreferrer">search on math</a></li>
       <li><a href="https://tikzcd.yichuanshen.de" target="_blank" rel="noopener noreferrer">tikzcd editor</a></li>
      <li><a href="https://q.uiver.app" target="_blank" rel="noopener noreferrer">quiver</a></li>
