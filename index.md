@@ -112,6 +112,7 @@
     </ul>
    <h2 class="title">よく使うリンク</h2>
     <ul>
+      <li><a href="https://ryo1203.github.io/html/shihon_kanri_upload.html" target="_blank" rel="noopener noreferrer">自分の所持している小説一覧</a></li>
       <li><a href="http://www.math.titech.ac.jp" target="_blank" rel="noopener noreferrer">東工大数学系ホームページ</a></li>
       <li><a href="http://www.ocw.titech.ac.jp/index.php?module=General&action=T0200&GakubuCD=1&GakkaCD=311100&KeiCD=11&tab=2&focus=200&lang=JA" target="_blank" rel="noopener noreferrer">東工大OCWの数学系のページ</a></li>
       <li><a href="http://www.ocw.titech.ac.jp/index.php?module=General&action=T0200&GakubuCD=1&GakkaCD=311111&KeiCD=11&course=11&tab=2&focus=400&lang=JA" target="_blank" rel="noopener noreferrer">東工大OCWの数学コースのページ</a></li>
