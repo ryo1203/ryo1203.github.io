@@ -1,10 +1,10 @@
  <html>
   <body>
     <h2 class="title">PDF置き場</h2>
-    自分が今までに書いたPDFを一覧で見れる場所がほしいと思い、ほぼ自分のためだけでまとめました。
+    自分が今までに書いたPDFを一覧で見れる場所がほしいと思い、まとめました。
     上に行くほど最近のものです。
-    途中で放置されていたり、間違いに気づいていなかったりするものがあるはずです。
-    なにかあれば自分の<a href="https://twitter.com/ryo_Iridium" target="_blank" rel="noopener noreferrer">ツイッター</a>に連絡ください。
+    途中で放置されていたり、間違いに気づいていなかったりするものがあるかもしれません。
+    <!-- なにかあれば自分の<a href="https://twitter.com/ryo_Iridium" target="_blank" rel="noopener noreferrer">ツイッター</a>に連絡ください。  -->
     ちなみに個人的な日記は<a href="https://iridium.hatenablog.com" target="_blank" rel="noopener noreferrer">こっち</a>に。
     <ul>
      <br>
