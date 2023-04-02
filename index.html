@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Ishizuka's Website</title>
+    <style>
+        /* タブのスタイル */
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+
+        .tab button {
+            background-color: inherit;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+        .tab button:hover {
+            background-color: #ddd;
+        }
+
+        .tab button.active {
+            background-color: #ccc;
+        }
+
+        /* タブのコンテンツのスタイル */
+        .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
+
+        .large {
+            font-size: 1.2rem;
+        }
+
+        ul li {
+            padding-bottom: 0.5rem;
+        }
+
+        ol li {
+            padding-bottom: 0.5rem;
+        }
+
+        a {
+            color: rgb(33, 33, 33);
+        }
+    </style>
+    <!-- タブを切り替えるJavaScript -->
+    <script>
+
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+            // 選択されたタブをローカルストレージに保存する
+            localStorage.setItem("selectedTab", tabName);
+        }
+
+        // 最初に開くタブを設定する
+        document.getElementsByClassName("tablinks")[0].click();
+
+
+
+// // ページが読み込まれたときの処理
+// document.addEventListener("DOMContentLoaded", function () {
+//   // 前回選択されたタブがある場合は、そのタブを開く
+//   var selectedTab = localStorage.getItem("selectedTab");
+//   if (selectedTab) {
+//     document.getElementById(selectedTab).style.display = "block";
+//     var tablinks = document.getElementsByClassName("tablinks");
+//     for (var i = 0; i < tablinks.length; i++) {
+//       if (tablinks[i].getAttribute("onclick").includes(selectedTab)) {
+//         tablinks[i].className += " active";
+//         break;
+//       }
+//     }
+//   } else {
+//     // 前回選択されたタブがない場合は、最初のタブを開く
+//     document.getElementsByClassName("tabcontent")[0].style.display = "block";
+//     document.getElementsByClassName("tablinks")[0].className += " active";
+//   }
+// });
+    </script>
+</head>
+
+<body>
+    <!-- タブのボタン -->
+    <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'About')">About</button>
+        <button class="tablinks" onclick="openTab(event, 'Papers')">Papers</button>
+        <button class="tablinks" onclick="openTab(event, 'Talks')">Talks</button>
+        <button class="tablinks" onclick="openTab(event, 'Notes')">Notes (Japanese)</button>
+        <button class="tablinks" onclick="openTab(event, 'Links')">Links</button>
+    </div>
+
+    <!-- タブのコンテンツ -->
+    <div id="About" class="tabcontent" style="display: block;">
+        <h2>Ryo ISHIZUKA (石塚 伶)</h2>
+
+        <!-- <p class="large">E-mail: ishizuka.r.ac [at] m.titech.ac.jp</p> -->
+
+        <ul>
+            <li>Status: Second-year Master's student (Department of Mathematics, Tokyo Institute of Technology )</li>
+            <li>E-mail: ishizuka.r.ac [at] m.titech.ac.jp</li>
+            <li>Born: Saitama (埼玉県), Japan (日本)</li>
+            <li>CV (.pdf): <a href="CV/CV.pdf" target="_blank" rel="noopener noreferrer">Here</a></li>
+        </ul>
+
+        <h3>Research Interests</h3>
+
+        <p>I am interested in commutative algebra in mixed characteristic,
+            especially by using arithmetic methods such as perfectoid rings, prismatic cohomologies, and almost
+            mathematics.</p>
+
+        <h3>Education</h3>
+        <ul>
+            <li>Master (Apr 2023-Current): Tokyo Institute of Technology (Supervisor: Kazuma Shimomoto (2nd year),
+                Fumiharu Kato (1st year)) </li>
+            <li>Bachelor (Apr 2018-Mar 2022): Tokyo Institute of Technology</li>
+        </ul>
+
+        <h3>See also</h3>
+        <ul>
+            <li><a href="https://www.researchgate.net/profile/Ryo-Ishizuka-3" target="_blank"
+                    rel="noopener noreferrer">ResearchGate</a></li>
+            <li><a href="https://arxiv.org/search/math?query=Ishizuka%2C+Ryo&searchtype=author&abstracts=show&order=-announced_date_first&size=50"
+                    target="_blank" rel="noopener noreferrer">ArXiv</a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="Papers" class="tabcontent">
+        <h3>Preprints</h3>
+        <ol reversed>
+            <li>(joint with Kazuma Shimomoto) <br>
+                <strong>A mixed characteristic analogue of the perfection of rings and its almost Cohen-Macaulay
+                    property</strong> <br>
+                (2023) <a href="https://arxiv.org/abs/2303.13872" target="_blank"
+                    rel="noopener noreferrer">arXiv:2303.13872</a>
+            </li>
+        </ol>
+
+    </div>
+
+    <div id="Talks" class="tabcontent">
+        <h3>Talks</h3>
+        <ol reversed>
+            <li>Aug 2023. “Absolute integral closure”, The 18th Summer School on Commutative algebra, Tokyo Institute of
+                Technology, Japan.</li>
+
+            <li>Mar 2023. “A mixed characteristic analogue of the perfection of rings”, <a
+                    href="http://math.ac.vn/conference/JVsemina2023/index.php?lang=en" target="_blank"
+                    rel="noopener noreferrer">The 11th Japan-Vietnam Joint
+                    Seminar on Commutative Algebra - by and for young mathematicians -</a>, Vietnam Academy of Science
+                and Technology, Vietnam.</li>
+
+            <li>Mar 2023. “An explicit construction of perfectoid almost Cohen-Macaulay algebras in mixed
+                characteristic”, <a href="http://www.mathsoc.jp/activity/meeting/chuo23mar/index.html" target="_blank"
+                    rel="noopener noreferrer">MSJ Spring
+                    Meeting 2023</a>, Chuo University, Japan.</li>
+
+            <li>Mar 2023. “An explicit construction of perfectoid almost Cohen-Macaulay algebras”, <a
+                    href="https://www.math.sci.hokudai.ac.jp/~wakate/mcyr/2023/en/index.html" target="_blank"
+                    rel="noopener noreferrer">The 19th Mathematics
+                    Conference for Young Researchers</a>, Hokkaido University, Japan.</li>
+
+            <li>Oct 2022. “An explicit construction of perfectoid almost Cohen-Macaulay algebras in mixed
+                characteristic”, <a href="https://ryokanda.net/conferences/commalg2022/" target="_blank"
+                    rel="noopener noreferrer">The 43rd Japan Symposium on
+                    Commutative Algebra</a>, Osaka University, Japan.</li>
+        </ol>
+    </div>
+
+    <div id="Notes" class="tabcontent">
+        <h3>Notes</h3>
+        <p>The following notes are written by Japanese.</p>
+
+        自分が今までに書いたPDFを一覧で見れる場所がほしいと思い、まとめました。
+        上に行くほど最近のものです。
+        途中で放置されていたり、間違いに気づいていなかったりするものがあるかもしれません。
+        <!-- なにかあれば自分の<a href="https://twitter.com/ryo_Iridium" target="_blank" rel="noopener noreferrer">ツイッター</a>に連絡ください。  -->
+        <ul>
+            <li>
+                <a href="PDF/valuative_criterion.pdf" target="_blank"
+                    rel="noopener noreferrer">付値判定法と点列極限の存在性の類似性について</a>
+                <br>
+                スキーム論におけるseparated性などの付値判定法と位相空間論における点列極限の存在性との類似性についてまとめたものです。
+                付値環のスペクトラムからの射がスキームの中に点列とその極限を与えることに対応していることを踏まえて、付値判定法によるliftの存在性と点列極限の存在性の類似を述べました。
+                数学的な厳密性よりもキモチを説明することを重視した文章になっています。
+                この内容は筆者がセミナーで指導教官から教えてもらったことなので自分で見つけたことでは無いですし、それを改めて自分の言葉で書き下してみたものですので間違いがあったら自分が原因です。
+                <br>
+                更新履歴：2022/2/16 公開
+            </li>
+            <li>
+                <a href="PDF/etale.pdf" target="_blank" rel="noopener noreferrer">etale射のノート</a>
+                <br>
+                etale射についてのゼミのノートです。
+                ノートと言ってもゼミの内容のうち、いつか見返したくなるであろうことをまとめて書き直したものです。
+                下記Adic空間論のゼミを一時的にこちらのゼミに変更しています。
+                発表者は自分ではありません。
+                <br>
+                更新履歴：2022/02/07 更新、2022/1/28 更新、2022/1/20 更新、2021/12/28 更新、2021/12/18 更新、2021/12/13 公開
+            </li>
+            <li>
+                <a href="PDF/counterexample.pdf" target="_blank"
+                    rel="noopener noreferrer">局所化が体か離散付値環だがネーターでも整域でもない被約連結環</a>
+                <br>
+                局所化が体か離散付値環になっているがネーターでも整域でもない被約連結環を構成し、
+                この環によって(否定的に)示される主張をいくつかまとめました。
+                この反例は<a href="https://arxiv.org/abs/1411.5901" target="_blank" rel="noopener noreferrer">[F.Rohrer
+                    2015]</a>で構成されていたものです。
+                直積環や剰余環のような典型的な反例の構成方法ではない形で与えられています。
+                前提知識は(アティマクくらいの)環論ですが、一部の証明に初等的なスキーム論を用いました。
+                某所で書いた原稿を移行しました。
+                <br>
+                更新履歴：2021/11/7 公開
+            </li>
+            <li>
+                <a href="PDF/adicspace.pdf" target="_blank" rel="noopener noreferrer">Adic空間論のノート</a>
+                <br>
+                自分で勉強しているAdic空間についてゼミで発表した部分をまとめています。
+                手元には手書きのノートしかないためPDF化したいという目的です。
+                ゼミに飽きない限り随時更新されていくはずです。
+                ゼミの当面の目標はある種のHuber pairがsheafyであることを証明することです。
+                証明を含む考察の多くはゼミを聴講してくれている方々によるものです。
+                <br>
+                更新履歴：2021/11/14 更新、2021/10/31 更新、2021/10/16 更新、2021/10/3 更新、2021/9/22 更新、2021/9/17 更新、2021/8/30
+                更新、2021/8/29 公開
+            </li>
+            <li>
+                <a href="PDF/SGA45.pdf" target="_blank" rel="noopener noreferrer">SGA4 1/2 一章 Cohomologie ´etale : les
+                    points de d´epartの和訳</a>
+                <br>
+                エタールコホモロジーを勉強しようとしたとき、SGA4 1/2の第一章(Arcata)がおすすめされていたので和訳を試みました。
+                正しく和訳できているかどうかは全く保証できません。
+                知識不足と期間が空いてしまった影響で未完成です。
+                やる気が復活する確率は低そうです。
+                誰か引き継いでくれる人が居たら.texファイルからお譲りいたします。
+                原文はEGAやSGAが公式に公開されている<a href="http://library.msri.org/books/sga/sga/index.html" target="_blank"
+                    rel="noopener noreferrer">サイト</a>からスキャンされたものが閲覧できます。
+                <br>
+                更新履歴：2021/8/29 公開
+            </li>
+            <li>
+                <a href="PDF/zariskisheaf.pdf" target="_blank" rel="noopener noreferrer">ザリスキー層の表現可能性について</a>
+                <br>
+                関手が表現可能か否かの判定法の一つである、
+                U.Goertz and T.Wedhorn「Algebraic Geometry
+                I」で述べられている、「表現可能関手による開被覆を持つザリスキー層は表現可能関手である」ことの証明がわからなかったので自分でまとめ直したノートです。
+                また、これを用いてアファインスペクトラムの一般化である準連接代数層に対するスペクトラムが定義できることについても証明をまとめ直しました。
+                <br>
+                更新履歴：2021/8/29 公開
+            </li>
+            <li>
+                <a href="PDF/scheme_intro.pdf" target="_blank" rel="noopener noreferrer">スキーム論の概形</a>
+                <br>
+                某所で発表したレジュメです。
+                環のスペクトラムから始めて、層を定義し、スキームの定義と性質などまで書きました。
+                いくつか自分の好きなスキームの定理も紹介しました。3時間ほどの発表だったので必要最低限(未満)の内容のみが書いてあります。
+                <br>
+                更新履歴：2021/8/29 公開
+            </li>
+            <li>
+                <a href="PDF/group_cohomology.pdf" target="_blank"
+                    rel="noopener noreferrer">群のコホモロジーの長完全列とHilbertの定理90について</a>
+                <br>
+                某所で発表したレジュメです。
+                下記のガロア理論のノートの、群のコホモロジーの長完全列とHilbertの定理90についてを改めて書き直しました。
+                下記のノートでは中途半端になっていた部分が解消されているはずですが、詳しく比較したわけではないので確証はありません。
+                <br>
+                更新履歴：2021/8/29 公開
+            </li>
+            <li>
+                <a href="PDF/galois_theory.pdf" target="_blank" rel="noopener noreferrer">ガロア理論のノート</a>
+                <br>
+                代数学の授業を受けてそのノートと藤崎源二郎「体とGalois理論」をもとに証明をつけられる分だけ付けました。
+                結構昔に書いたので形式も文章も非常に拙いです。
+                未完成です。これからも更新される可能性はとても低いです。
+                体の話からGalois cohomologyの話までです。
+                <br>
+                更新履歴：2021/8/29 公開
+            </li>
+        </ul>
+
+    </div>
+
+    <div id="Links" class="tabcontent">
+        <h3>Personal Links (Japanese)</h3>
+        <ul>
+            <li><a href="https://iridium.hatenablog.com" target="_blank" rel="noopener noreferrer">日記</a></li>
+            <li><a href="html/shihon_kanri_upload.html" target="_blank" rel="noopener noreferrer">自分の所持している小説一覧</a></li>
+            <li><a href="http://www.math.titech.ac.jp" target="_blank" rel="noopener noreferrer">東工大数学系ホームページ</a></li>
+            <li><a href="http://www.ocw.titech.ac.jp/index.php?module=General&action=T0200&GakubuCD=1&GakkaCD=311100&KeiCD=11&tab=2&focus=200&lang=JA"
+                    target="_blank" rel="noopener noreferrer">東工大OCWの数学系のページ</a></li>
+            <li><a href="http://www.ocw.titech.ac.jp/index.php?module=General&action=T0200&GakubuCD=1&GakkaCD=311111&KeiCD=11&course=11&tab=2&focus=400&lang=JA"
+                    target="_blank" rel="noopener noreferrer">東工大OCWの数学コースのページ</a></li>
+        </ul>
+
+        <h3>Tools</h3>
+        <ul>
+            <li><a href="https://tikzcd.yichuanshen.de" target="_blank" rel="noopener noreferrer">tikzcd editor</a></li>
+            <li><a href="https://hypcol.marutank.net" target="_blank" rel="noopener noreferrer">Hyper Collocation</a>
+            </li>
+            <li><a href="https://www.tablesgenerator.com/latex_tables" target="blank" rel="noopener noreferrer">Table
+                    Generator</a></li>
+            <li><a href="https://www.connectedpapers.com" target="_blank" rel="noopener noreferrer">connected papers</a>
+            </li>
+            <li><a href="https://www.zbmath.org" target="_blank" rel="noopener noreferrer">zbMATH</a></li>
+            <li><a href="https://mathscinet.ams.org/mathscinet/index.html" target="_blank"
+                    rel="noopener noreferrer">mathscinet</a></li>
+            <li><a href="https://q.uiver.app" target="_blank" rel="noopener noreferrer">quiver</a></li>
+            <li><a href="https://www.searchonmath.com" target="_blank" rel="noopener noreferrer">search on math</a></li>
+        </ul>
+    </div>
+
+</body>
+
+</html>
