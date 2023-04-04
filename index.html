@@ -17,9 +17,12 @@
             border: none;
             outline: none;
             cursor: pointer;
-            padding: 14px 16px;
+            padding: 0.85rem 0.95rem;
+            /* 14px 16px; */
             transition: 0.3s;
-            font-size: 17px;
+            font-size: 1rem;
+            /*  17px; */
+            flex: 1;
         }
 
         .tab button:hover {
@@ -36,7 +39,21 @@
             padding: 6px 12px;
             border: 1px solid #ccc;
             border-top: none;
+            font-size: 16px;
         }
+
+        @media screen and (max-width: 700px) {
+            /* .tab button {
+                font-size: 14px;
+                 小さめの文字サイズ 
+            } */
+
+            .tabcontent {
+                font-size: 12px;
+                /* 小さめの文字サイズ */
+            }
+        }
+
 
         .large {
             font-size: 1.2rem;
@@ -147,6 +164,10 @@
     </div>
 
     <div id="Papers" class="tabcontent">
+
+        <!-- 何故か次のような長い文章がないと画面サイズを小さくしたときに文字サイズが小さくなってしまう。 -->
+        <!-- Status: Second-year Master's student (Department of Mathematics, Tokyo Institute of Technology ) -->
+
         <h3>Preprints</h3>
         <ol reversed>
             <li>(joint with Kazuma Shimomoto) <br>
@@ -156,7 +177,6 @@
                     rel="noopener noreferrer">arXiv:2303.13872</a>
             </li>
         </ol>
-
     </div>
 
     <div id="Talks" class="tabcontent">
@@ -192,9 +212,7 @@
         <h3>Notes</h3>
         <p>The following notes are written by Japanese.</p>
 
-        自分が今までに書いたPDFを一覧で見れる場所がほしいと思い、まとめました。
-        上に行くほど最近のものです。
-        途中で放置されていたり、間違いに気づいていなかったりするものがあるかもしれません。
+        <p>自分が今までに書いたPDFを一覧で見れる場所がほしいと思い、まとめました。上に行くほど最近のものです。途中で放置されていたり、間違いに気づいていなかったりするものがあるかもしれません。</p>
         <!-- なにかあれば自分の<a href="https://twitter.com/ryo_Iridium" target="_blank" rel="noopener noreferrer">ツイッター</a>に連絡ください。  -->
         <ul>
             <li>
@@ -245,8 +263,8 @@
                 更新、2021/8/29 公開
             </li>
             <li>
-                <a href="PDF/SGA45.pdf" target="_blank" rel="noopener noreferrer">SGA4 1/2 一章 Cohomologie ´etale : les
-                    points de d´epartの和訳</a>
+                <a href="PDF/SGA45.pdf" target="_blank" rel="noopener noreferrer">SGA4 1/2 一章 Cohomologie 'etale : les
+                    points de d`epartの和訳</a>
                 <br>
                 エタールコホモロジーを勉強しようとしたとき、SGA4 1/2の第一章(Arcata)がおすすめされていたので和訳を試みました。
                 正しく和訳できているかどうかは全く保証できません。
