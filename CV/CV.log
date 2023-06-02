@@ -1,10 +1,10 @@
-This is e-upTeX, Version 3.141592653-p4.0.0-u1.28-220214-2.6 (utf8.uptex) (TeX Live 2022) (preloaded format=uplatex 2022.9.17)  2 APR 2023 17:58
+This is e-upTeX, Version 3.141592653-p4.0.0-u1.28-220214-2.6 (utf8.uptex) (TeX Live 2022) (preloaded format=uplatex 2022.9.17)  3 JUN 2023 00:53
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**c:/Users/1203r/Dropbox/TeX/CV/CV
-(c:/Users/1203r/Dropbox/TeX/CV/CV.tex
+**c:/Users/1203r/Dropbox/website/CV/CV
+(c:/Users/1203r/Dropbox/website/CV/CV.tex
 pLaTeX2e <2021-11-15u04> (based on LaTeX2e <2022-06-01> patch level 5)
 L3 programming layer <2022-08-30> (c:/texlive/2022/texmf-dist/tex/latex/moderncv/moderncv.cls
 Document Class: moderncv 2022-02-21 v2.3.1 modern curriculum vitae and letter document class
@@ -1017,23 +1017,29 @@ LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
 LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
 (Font)              No change on input line 150.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
-(Font)              No change on input line 170.
+(Font)              No change on input line 171.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
-(Font)              No change on input line 186.
+(Font)              No change on input line 171.
+LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
+(Font)              No change on input line 187.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 189.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 191.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 194.
+LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
+(Font)              No change on input line 196.
+LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
+(Font)              No change on input line 199.
 LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
-(Font)              No change on input line 203.
+(Font)              No change on input line 208.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <9> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 203.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 208.
 LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
-(Font)              No change on input line 204.
+(Font)              No change on input line 209.
 LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
-(Font)              No change on input line 205.
+(Font)              No change on input line 210.
  [1
 
 ] (./CV.aux)
@@ -1045,12 +1051,12 @@ Package logreq Info: Writing requests to 'CV.run.xml'.
  )
 (\end occurred when \iffalse on line 31 was incomplete) 
 Here is how much of TeX's memory you used:
- 29757 strings out of 475526
- 572241 string characters out of 5794121
- 1362674 words of memory out of 5000000
- 50880 multiletter control sequences out of 15000+600000
+ 29760 strings out of 475526
+ 572366 string characters out of 5794121
+ 1365701 words of memory out of 5000000
+ 50883 multiletter control sequences out of 15000+600000
  525279 words of font info for 83 fonts, out of 8000000 for 9000
  929 hyphenation exceptions out of 8191
- 129i,11n,122p,713b,1757s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 129i,11n,122p,717b,1757s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on CV.dvi (1 page, 45188 bytes).
+Output written on CV.dvi (1 page, 45984 bytes).
