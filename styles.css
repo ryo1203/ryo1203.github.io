@@ -2,6 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 20px;
     padding: 0;
+    line-height: 1.5; /* 行間を調整する */
 }
 
 header {
@@ -33,7 +34,6 @@ nav li a {
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
-    border: 1px solid #ccc;
 }
 
 nav li a:hover {
@@ -47,6 +47,7 @@ nav li a.active {
 
 main {
     padding: 20px;
+    border: 1px solid #ccc; /* 表示領域を細い線で囲む */
 }
 
 section {
