@@ -19,6 +19,29 @@
 
 \refsection{0}
   \datalist[entry]{none/global//global/global}
+    \entry{misc3}{misc}{}
+      \name{author}{2}{}{%
+        {{hash=6493f04a251246d144b9a3cd65c0c6e2}{%
+           family={D.Dine},
+           familyi={D\bibinitperiod}}}%
+        {{hash=c8e162824f6ab94cfb9981fbbc68a9f5}{%
+           family={\textbf{R.Ishizuka}},
+           familyi={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{c03cb8d5348905dbdbe2372562021f1d}
+      \strng{fullhash}{c03cb8d5348905dbdbe2372562021f1d}
+      \strng{bibnamehash}{c03cb8d5348905dbdbe2372562021f1d}
+      \strng{authorbibnamehash}{c03cb8d5348905dbdbe2372562021f1d}
+      \strng{authornamehash}{c03cb8d5348905dbdbe2372562021f1d}
+      \strng{authorfullhash}{c03cb8d5348905dbdbe2372562021f1d}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Tilting and untilting for ideals in perfectoid rings}
+      \field{year}{arXiv:2308.09600}
+      \true{nocite}
+    \endentry
     \entry{misc2}{misc}{}
       \name{author}{1}{}{%
         {{hash=c8e162824f6ab94cfb9981fbbc68a9f5}{%
@@ -31,8 +54,8 @@
       \strng{authorbibnamehash}{c8e162824f6ab94cfb9981fbbc68a9f5}
       \strng{authornamehash}{c8e162824f6ab94cfb9981fbbc68a9f5}
       \strng{authorfullhash}{c8e162824f6ab94cfb9981fbbc68a9f5}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{A calculation of the perfectoidization of semiperfectoid rings}
@@ -54,8 +77,8 @@
       \strng{authorbibnamehash}{a3c8f412291a864cd5216d82f8862b2d}
       \strng{authornamehash}{a3c8f412291a864cd5216d82f8862b2d}
       \strng{authorfullhash}{a3c8f412291a864cd5216d82f8862b2d}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{title}{A mixed characteristic analogue of the perfection of rings and its almost Cohen-Macaulay property}
