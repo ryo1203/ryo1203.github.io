@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>bbl translates to bibitem</title>
     <link rel="stylesheet" type="text/css" href="../styles.css">
     <style>
-        html, body {
+        html,
+        body {
             height: 100%;
             margin: 0;
             padding: 0;
@@ -13,6 +15,7 @@
             -webkit-font-smoothing: antialiased;
             background: #f0f0f0;
         }
+
         .container {
             display: flex;
             flex-direction: column;
@@ -20,31 +23,44 @@
             align-items: center;
             /* height: 100vh; */
         }
-        #inputText, #displayText, #copyText {
+
+        #inputText,
+        #displayText,
+        #copyText {
             width: 60%;
-            height: 200px; /* 高さを固定のピクセル値に設定 */
+            height: 200px;
+            /* 高さを固定のピクセル値に設定 */
             resize: none;
             border: 2px solid gray;
-            font-size: 15px; /* 文字サイズを大きくする */
+            font-size: 15px;
+            /* 文字サイズを大きくする */
         }
+
         .buttonContainer {
             display: flex;
             justify-content: center;
             gap: 20px;
             margin: 30px 0;
         }
+
         button {
-            background-color: #ffffff; /* ボタンの背景色を白に設定 */
-            color: #000000; /* ボタンの文字色を黒に設定 */
-            border: 1px solid #000000; /* ボタンのボーダーを黒に設定 */
-            font-size: 15px; /* ボタンの文字の大きさを15pxに設定 */
+            background-color: #ffffff;
+            /* ボタンの背景色を白に設定 */
+            color: #000000;
+            /* ボタンの文字色を黒に設定 */
+            border: 1px solid #000000;
+            /* ボタンのボーダーを黒に設定 */
+            font-size: 15px;
+            /* ボタンの文字の大きさを15pxに設定 */
         }
 
         button:hover {
-            background-color: #dddddd; /* ホバー時のボタンの背景色を濃い灰色に設定 */
+            background-color: #dddddd;
+            /* ホバー時のボタンの背景色を濃い灰色に設定 */
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h2>
@@ -55,7 +71,8 @@
             <!-- 説明 -->
             <b>How to use:</b> <br>
             This is a tool to convert a bbl file made from biblatex to a bibitem file. <br>
-            Copy and paste the bbl file from the first \entry to the last \endentry into the input area and click the "Translate" button. <br>
+            Copy and paste the bbl file from the first \entry to the last \endentry into the input area and click the
+            "Translate" button. <br>
             The converted bibitem file will be displayed in the output area. <br>
             Paste the copied text into the bibliography environment at the bottom of this page. <br>
             Compile the tex file and check the result. <br>
@@ -66,7 +83,7 @@
             ・This script is forcibly running in JavaScript for demonstration purposes only. <br>
             ・No data transmission is being performed. <br>
             ・No reported bugs will be addressed.
-             <br>
+            <br>
         </p>
         <textarea id="inputText" rows="4" cols="50" placeholder="Paste your bbl file"></textarea>
         <div class="buttonContainer">
@@ -81,8 +98,10 @@
         </div>
 
         <!-- 新たに追加するコード -->
-    <p><b>Use the following bibliography enviroment. This is based on <a href="https://www.overleaf.com/latex/templates/nagoya-mathematical-journal/mjtnggqmpgkt">NMJ Format</a></b></p>
-    <textarea id="copyText" rows="4" cols="50" readonly>
+        <p><b>Use the following bibliography enviroment. This is based on <a
+                    href="https://www.overleaf.com/latex/templates/nagoya-mathematical-journal/mjtnggqmpgkt">NMJ
+                    Format</a></b></p>
+        <textarea id="copyText" rows="4" cols="50" readonly>
         \begin{thebibliography}{LONGEST LABEL}
         \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
         \def\au#1{#1} \def\ed#1{#1} \def\yr#1{#1}\def\at#1{#1}\def\jt#1{{#1}}
@@ -97,9 +116,9 @@
 
     \end{thebibliography}
 </textarea>
-    <div class="buttonContainer">
-        <button id="copyCopyTextButton">Copy the Enviroment</button>
-    </div>
+        <div class="buttonContainer">
+            <button id="copyCopyTextButton">Copy the Enviroment</button>
+        </div>
 
         <div class="footer">
             <p>Created by <a href="index.html">Ryo ishizuka</a></p>
@@ -123,39 +142,39 @@
 
             // labelLongestの値をHTML要素に出力
             document.getElementById("copyText").value = document.getElementById("copyText").value.replace('LONGEST LABEL', labelLongest);
-}
-        
-                // テキストエリアの内容を削除するボタン
-                function refreshText() {
-                    document.getElementById("inputText").value = '';
-                }
+        }
 
-                // 出力された内容をクリップボードにコピーする関数
-                document.getElementById("copyButton").addEventListener("click", function() {
-                    var copyText = document.getElementById("displayText");
-                    copyText.select();
-                    document.execCommand("copy");
-                });
+        // テキストエリアの内容を削除するボタン
+        function refreshText() {
+            document.getElementById("inputText").value = '';
+        }
 
-                // 入力された内容をクリップボードにコピーする関数
-                document.getElementById("copyInputButton").addEventListener("click", function() {
-                    var copyText = document.getElementById("inputText");
-                    copyText.select();
-                    document.execCommand("copy");
-                });
+        // 出力された内容をクリップボードにコピーする関数
+        document.getElementById("copyButton").addEventListener("click", function () {
+            var copyText = document.getElementById("displayText");
+            copyText.select();
+            document.execCommand("copy");
+        });
 
-                // 出力された内容をクリップボードにコピーする関数
-                document.getElementById("copyCopyTextButton").addEventListener("click", function() {
-                    var copyText = document.getElementById("copyText");
-                    copyText.select();
-                    document.execCommand("copy");
-                });
+        // 入力された内容をクリップボードにコピーする関数
+        document.getElementById("copyInputButton").addEventListener("click", function () {
+            var copyText = document.getElementById("inputText");
+            copyText.select();
+            document.execCommand("copy");
+        });
 
-                // クリップボードからテキストを取得する関数
-                function pasteFromClipboard() {
-                    navigator.clipboard.readText().then(text => document.getElementById("inputText").value = text);
-                }
-                
+        // 出力された内容をクリップボードにコピーする関数
+        document.getElementById("copyCopyTextButton").addEventListener("click", function () {
+            var copyText = document.getElementById("copyText");
+            copyText.select();
+            document.execCommand("copy");
+        });
+
+        // クリップボードからテキストを取得する関数
+        function pasteFromClipboard() {
+            navigator.clipboard.readText().then(text => document.getElementById("inputText").value = text);
+        }
+
         // プレーンテキストから特定の情報を抽出してBibitem形式の文字列に変換する関数
         function convertToBibitem(text) {
 
@@ -196,13 +215,13 @@
 
 
             let authors = '';
-            for (let i = 0; i <= n-1; i++) {
+            for (let i = 0; i <= n - 1; i++) {
                 // 著者familyname情報の抽出
                 const authorfamilyregex = /family={(.*?)},\n/g;
                 const authorfamilyMatch = [...text.matchAll(authorfamilyregex)].map(match => match[1]);
                 let authorfamily = authorfamilyMatch ? authorfamilyMatch[i] : '';
                 if (authorfamily.includes('\\bibnamedelima')) {
-                authorfamily = authorfamily.replace(/\\bibnamedelima/g, '');
+                    authorfamily = authorfamily.replace(/\\bibnamedelima/g, '');
                 }
                 if (authorfamily.includes('\\bibinithyphendelim')) {
                     authorfamily = authorfamily.replace(/\\bibinithyphendelim /g, '-');
@@ -220,7 +239,7 @@
                     authorgiveni = authorgiveni.replace(/\\bibinithyphendelim /g, '-');
                 }
                 if (authorgiveni.includes('\\bibnamedelima')) {
-                authorgiveni = authorgiveni.replace(/\\bibnamedelima/g, '');
+                    authorgiveni = authorgiveni.replace(/\\bibnamedelima/g, '');
                 }
                 if (authorgiveni.includes('\\bibinitdelim')) {
                     authorgiveni = authorgiveni.replace(/\\bibinitdelim/g, '.');
@@ -245,11 +264,11 @@
             // titleから中括弧を削除
             if (title) {
                 if (title.includes('}')) {
-                title = title.replace(/}/g, '');
-            }
-            if (title.includes('{')) {
-                title = title.replace(/{/g, '');
-            }
+                    title = title.replace(/}/g, '');
+                }
+                if (title.includes('{')) {
+                    title = title.replace(/{/g, '');
+                }
             }
             title = titleMatch ? `\\at{\\textit{${title}}}` : '';
             // titleInfoから\textbackslashを削除
@@ -269,11 +288,11 @@
             let journal = journalMatch ? `${journalMatch[1]}` : '';
             if (journal) {
                 if (journal.includes('}')) {
-                journal = journal.replace(/}/g, '');
-            }
-            if (journal.includes('{')) {
-                journal = journal.replace(/{/g, '');
-            }
+                    journal = journal.replace(/}/g, '');
+                }
+                if (journal.includes('{')) {
+                    journal = journal.replace(/{/g, '');
+                }
             }
             journal = journalMatch ? `\\jt{${journal}}` : '';
 
@@ -283,11 +302,11 @@
             let volumeInfo = volumeMatch ? `${volumeMatch[1]}` : '';
             if (volumeInfo) {
                 if (volumeInfo.includes('}')) {
-                volumeInfo = volumeInfo.replace(/}/g, '');
-            }
-            if (volumeInfo.includes('{')) {
-                volumeInfo = volumeInfo.replace(/{/g, '');
-            }
+                    volumeInfo = volumeInfo.replace(/}/g, '');
+                }
+                if (volumeInfo.includes('{')) {
+                    volumeInfo = volumeInfo.replace(/{/g, '');
+                }
             }
             volumeInfo = volumeMatch ? `\\bvol{${volumeInfo}}` : '';
 
@@ -297,11 +316,11 @@
             let numberInfo = numberMatch ? `${numberMatch[1]}` : '';
             if (numberInfo) {
                 if (numberInfo.includes('}')) {
-                numberInfo = numberInfo.replace(/}/g, '');
-            }
-            if (numberInfo.includes('{')) {
-                numberInfo = numberInfo.replace(/{/g, '');
-            }
+                    numberInfo = numberInfo.replace(/}/g, '');
+                }
+                if (numberInfo.includes('{')) {
+                    numberInfo = numberInfo.replace(/{/g, '');
+                }
             }
             numberInfo = numberMatch ? `(${numberInfo})` : '';
 
@@ -311,11 +330,11 @@
             let yearInfo = yearMatch ? `${yearMatch[1]}` : '';
             if (yearInfo) {
                 if (yearInfo.includes('}')) {
-                yearInfo = yearInfo.replace(/}/g, '');
-            }
-            if (yearInfo.includes('{')) {
-                yearInfo = yearInfo.replace(/{/g, '');
-            }
+                    yearInfo = yearInfo.replace(/}/g, '');
+                }
+                if (yearInfo.includes('{')) {
+                    yearInfo = yearInfo.replace(/{/g, '');
+                }
             }
             yearInfo = yearMatch ? `(\\yr{${yearInfo}})` : '';
 
@@ -350,11 +369,11 @@
             let seriesInfo = seriesMatch ? `${seriesMatch[1]}` : '';
             if (seriesInfo) {
                 if (seriesInfo.includes('}')) {
-                seriesInfo = seriesInfo.replace(/}/g, '');
-            }
-            if (seriesInfo.includes('{')) {
-                seriesInfo = seriesInfo.replace(/{/g, '');
-            }
+                    seriesInfo = seriesInfo.replace(/}/g, '');
+                }
+                if (seriesInfo.includes('{')) {
+                    seriesInfo = seriesInfo.replace(/{/g, '');
+                }
             }
             seriesInfo = seriesMatch ? `\\series{${seriesInfo}}` : '';
 
@@ -389,69 +408,70 @@
 
 
 
-        // Bibitemの生成
-        let bibitem = `\\bibitem[${label}]{${citationkey}}\n{${authors}}, ${title}`;
-        if (!entryType) {
-            bibitem = 'Can Not Fined Entry';
-        }
-        else if (entryType === 'book') {
-            if (seriesInfo) {
-                bibitem += `, ${seriesInfo}`;
+            // Bibitemの生成
+            let bibitem = `\\bibitem[${label}]{${citationkey}}\n{${authors}}, ${title}`;
+            if (!entryType) {
+                bibitem = 'Can Not Fined Entry';
             }
-            if (editionInfo) {
-                bibitem += `, ${editionInfo}`;
-            } else {
-                bibitem += `, ${numberInfo}`;
+            else if (entryType === 'book') {
+                if (seriesInfo) {
+                    bibitem += `, ${seriesInfo}`;
+                }
+                if (editionInfo) {
+                    bibitem += `, ${editionInfo}`;
+                } else {
+                    bibitem += `, ${numberInfo}`;
+                }
+                if (yearInfo) {
+                    bibitem += ` ${yearInfo}`;
+                }
+                if (publisherInfo) {
+                    bibitem += ` ${publisherInfo}`;
+                }
+            } else if (entryType === 'article' && eprinttypeInfo !== 'arxiv') {
+                if (journal) {
+                    bibitem += `, ${journal}`;
+                }
+                if (volumeInfo) {
+                    bibitem += `, ${volumeInfo}`;
+                }
+                if (numberInfo) {
+                    bibitem += `${numberInfo}`;
+                }
+                if (yearInfo) {
+                    bibitem += ` ${yearInfo}`;
+                }
+                if (pagesInfo) {
+                    bibitem += ` ${pagesInfo}`;
+                }
+                if (!journal && urlInfo) {
+                    bibitem += `. ${urlInfo}`;
+                }
+            } else if (eprinttypeInfo === 'arxiv') {
+                bibitem += `, preprint,`;
+                if (yearInfo) {
+                    bibitem += ` ${yearInfo}.`;
+                }
+                if (arxivnumberInfo) {
+                    bibitem += ` ${arxivnumberInfo}`;
+                }
+            } else if (citationkey === `stacks-project`) {
+                bibitem = `\\bibitem[Sta]{stacks-project}\n{\\au{The Stacks Project Authors}}, \\at{\\textit{Stacks Project}}. \\url{https://stacks.math.columbia.edu}`;
+            } else if (eprinttypeInfo !== 'arxiv' && entryType === 'misc') {
+                if (yearInfo) {
+                    bibitem += `, ${yearInfo}.`;
+                } else {
+                    bibitem += '.';
+                }
+                if (urlInfo) {
+                    bibitem += ` ${urlInfo}`;
+                }
             }
-            if (yearInfo) {
-                bibitem += ` ${yearInfo}`;
-            }
-            if (publisherInfo) {
-                bibitem += ` ${publisherInfo}`;
-            }
-        } else if (entryType === 'article' && eprinttypeInfo !== 'arxiv') {
-            if (journal) {
-                bibitem += `, ${journal}`;
-            }
-            if (volumeInfo) {
-                bibitem += `, ${volumeInfo}`;
-            }
-            if (numberInfo) {
-                bibitem += `${numberInfo}`;
-            }
-            if (yearInfo) {
-                bibitem += ` ${yearInfo}`;
-            }
-            if (pagesInfo) {
-                bibitem += ` ${pagesInfo}`;
-            }
-            if (!journal && urlInfo) {
-                bibitem += `. ${urlInfo}`;
-            }
-        } else if (eprinttypeInfo === 'arxiv') {
-            bibitem += `, preprint,`;
-            if (yearInfo) {
-                bibitem += ` ${yearInfo}.`;
-            }
-            if (arxivnumberInfo) {
-                bibitem += ` ${arxivnumberInfo}`;
-            }
-        } else if (citationkey === `stacks-project`) {
-            bibitem = `\\bibitem[Sta]{stacks-project}\n{\\au{The Stacks Project Authors}}, \\at{\\textit{Stacks Project}}. \\url{https://stacks.math.columbia.edu}`;
-        } else if (eprinttypeInfo !== 'arxiv' && entryType === 'misc') {
-            if (yearInfo) {
-                bibitem += `, ${yearInfo}.`;
-            } else {
-                bibitem += '.';
-            }
-            if (urlInfo) {
-                bibitem += ` ${urlInfo}`;
-            }
-        }
-        bibitem += '.\n\n';
+            bibitem += '.\n\n';
 
-        return bibitem;
+            return bibitem;
         }
     </script>
 </body>
+
 </html>
