@@ -18,11 +18,11 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100%;
+            /* height: 100vh; */
         }
-        #inputText, #displayText {
+        #inputText, #displayText, #copyText {
             width: 60%;
-            height: 30%;
+            height: 200px; /* 高さを固定のピクセル値に設定 */
             resize: none;
             border: 2px solid gray;
             font-size: 15px; /* 文字サイズを大きくする */
@@ -47,19 +47,68 @@
 </head>
 <body>
     <div class="container">
-        <p>.bbl translates to bibitem.</p>
-        <textarea id="inputText" rows="4" cols="50" placeholder="Paste your bbl"></textarea>
+        <h2>
+            <!-- タイトル -->
+            bbl translator to bibitem
+        </h2>
+        <p>
+            <!-- 説明 -->
+            <b>How to use:</b> <br>
+            This is a tool to convert a bbl file to a bibitem file. <br>
+            Copy and paste the bbl file from the first \entry to the last \endentry into the input area and click the "Translate" button. <br>
+            The converted bibitem file will be displayed in the output area. <br>
+            Paste the copied text into the bibliography environment at the bottom of this page. <br>
+            Compile the tex file and check the result. <br>
+            <!-- 注意事項 -->
+            <b>Notes:</b> <br>
+            ・This tool is not perfect. <br>
+            ・This tool is only tested in the author's environment (biblatex bbl format version 3.2). <br>
+            ・This script is forcibly running in JavaScript for demonstration purposes only. <br>
+            ・No data transmission is being performed. <br>
+            ・No reported bugs will be addressed.
+             <br>
+        </p>
+        <textarea id="inputText" rows="4" cols="50" placeholder="Paste your bbl file"></textarea>
         <div class="buttonContainer">
             <button onclick="getText()">Translate</button>
             <button onclick="refreshText()">Refresh</button>
+            <button id="copyInputButton">Copy Input</button>
         </div>
         <textarea id="displayText" rows="4" cols="50" readonly></textarea>
         <div class="buttonContainer">
-            <button id="copyButton">Copy</button>
+            <button id="copyButton">Copy Output</button>
+        </div>
+
+        <!-- 新たに追加するコード -->
+    <p><b>Use the following bibliography enviroment. This is based on <a href="https://www.overleaf.com/latex/templates/nagoya-mathematical-journal/mjtnggqmpgkt">NMJ Format</a></b></p>
+    <textarea id="copyText" rows="4" cols="50" readonly>
+        \begin{thebibliography}{LONGEST LABEL}
+        \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+        \def\au#1{#1} \def\ed#1{#1} \def\yr#1{#1}\def\at#1{#1}\def\jt#1{{#1}}
+        \def\bt#1{#1}\def\bvol#1{\textbf{#1}} \def\vol#1{#1} \def\pg#1{#1}
+        \def\publ#1{#1}\def\arxiv#1{#1}\def\org#1{#1}\def\st#1{\textit{#1}}\def\series#1{#1}
+    
+        % \bibitem[Label]{citationkey}
+        % \hypertarget{citationkey}{}
+        % {\au{A. Author} and \au{B. Author}}, \at{\textit{article title}},  \jt{Journal name} \bvol{volume}(number) (\yr{year}), \pg{{page}--{page}}.
+    
+        % Paste here.
+
+    \end{thebibliography}
+</textarea>
+    <div class="buttonContainer">
+        <button id="copyCopyTextButton">Copy the Enviroment</button>
+    </div>
+
+        <div class="footer">
+            <p>Created by <a href="index.html">Ryo ishizuka</a></p>
         </div>
     </div>
 
     <script>
+        let labelLengthAll = 0;
+        let labelLongest = ``;
+
         function getText() {
             var text = document.getElementById("inputText").value;
             var entries = text.split('\\endentry'); // テキストを\endentryで区切る
@@ -70,14 +119,33 @@
                 }
             }
             document.getElementById("displayText").value = convertedText; // 変換した文字列を表示
-        }
 
+            // labelLongestの値をHTML要素に出力
+            document.getElementById("copyText").value = document.getElementById("copyText").value.replace('LONGEST LABEL', labelLongest);
+}
+        
+                // テキストエリアの内容を削除するボタン
                 function refreshText() {
                     document.getElementById("inputText").value = '';
                 }
 
+                // 出力された内容をクリップボードにコピーする関数
                 document.getElementById("copyButton").addEventListener("click", function() {
                     var copyText = document.getElementById("displayText");
+                    copyText.select();
+                    document.execCommand("copy");
+                });
+
+                // 入力された内容をクリップボードにコピーする関数
+                document.getElementById("copyInputButton").addEventListener("click", function() {
+                    var copyText = document.getElementById("inputText");
+                    copyText.select();
+                    document.execCommand("copy");
+                });
+
+                // 出力された内容をクリップボードにコピーする関数
+                document.getElementById("copyCopyTextButton").addEventListener("click", function() {
+                    var copyText = document.getElementById("copyText");
                     copyText.select();
                     document.execCommand("copy");
                 });
@@ -95,6 +163,17 @@
             const labelMatch = labelRegex.exec(text);
             const label = labelMatch ? labelMatch[1] : '';
 
+            // ラベルの文字列の長さを取得
+            const labelLength = label.length;
+
+            // labelLengthがlabelLengthAllの最後の要素より大きい場合のみ、labelLengthをlabelLengthAll配列に追加
+            // labelLengthがlabelMaxLengthより大きい場合のみ、labelMaxLengthをlabelLengthで更新
+            if (labelLength > labelLengthAll) {
+                labelLengthAll = labelLength;
+                labelLongest = `${label}`;
+            }
+
+
             // citationkey情報の抽出
             const citationkeyRegex = /\\entry{(.*?)}/;
             const citationkeyMatch = citationkeyRegex.exec(text);
@@ -105,24 +184,46 @@
             const nameMatch = nameRegex.exec(text);
             const n = nameMatch ? parseInt(nameMatch[1]) : 0;
 
+            // const authorsfamilyregex = /family={(.*?)},\n/g;
+            // const authorsfamilyMatch = text.match(authorsfamilyregex);
+            // console.log(matches);
+
+
             let authors = '';
-            for (let i = 1; i <= n; i++) {
+            for (let i = 0; i <= n-1; i++) {
                 // 著者familyname情報の抽出
-                const authorfamilyRegex = /family={(.*?)},\n/;
-                const authorfamilyMatch = authorfamilyRegex.exec(text);
-                const authorfamily = authorfamilyMatch ? authorfamilyMatch[1] : '';
+                const authorfamilyregex = /family={(.*?)},\n/g;
+                const authorfamilyMatch = [...text.matchAll(authorfamilyregex)].map(match => match[1]);
+                let authorfamily = authorfamilyMatch ? authorfamilyMatch[i] : '';
+                if (authorfamily.includes('\\bibnamedelima')) {
+                authorfamily = authorfamily.replace(/\\bibnamedelima/g, '');
+                }
+                if (authorfamily.includes('\\bibinithyphendelim')) {
+                    authorfamily = authorfamily.replace(/\\bibinithyphendelim /g, '-');
+                }
 
                 // 著者giveniname情報の抽出
-                const authorgiveniRegex = /giveni={(.*?)}/;
-                const authorgiveniMatch = authorgiveniRegex.exec(text);
-                let authorgiveni = authorgiveniMatch ? authorgiveniMatch[1] : '';
+                const authorgiveniRegex = /giveni={(.*?)}/g;
+                const authorgiveniMatch = [...text.matchAll(authorgiveniRegex)].map(match => match[1]);
+                let authorgiveni = authorgiveniMatch ? authorgiveniMatch[i] : '';
                 // \\bibinitperiodを取り除く
-                authorgiveni = authorgiveni.replace('\\bibinitperiod', '');
+                if (authorgiveni.includes('\\bibinitperiod')) {
+                    authorgiveni = authorgiveni.replace(/\\bibinitperiod/g, '');
+                }
+                if (authorgiveni.includes('\\bibinithyphendelim')) {
+                    authorgiveni = authorgiveni.replace(/\\bibinithyphendelim /g, '-');
+                }
+                if (authorgiveni.includes('\\bibnamedelima')) {
+                authorgiveni = authorgiveni.replace(/\\bibnamedelima/g, '');
+                }
+                if (authorgiveni.includes('\\bibinitdelim')) {
+                    authorgiveni = authorgiveni.replace(/\\bibinitdelim/g, '.');
+                }
 
                 authors += `\\au{${authorgiveni}. ${authorfamily}}`;
-                if (i < n - 1) {
+                if (i < n - 2) {
                     authors += ', ';
-                } else if (i === n - 1) {
+                } else if (i === n - 2) {
                     authors += ', and ';
                 }
             }
@@ -130,8 +231,17 @@
             // タイトル情報の抽出
             const titleRegex = /\\field{title}{(.*?)}\n/;
             const titleMatch = titleRegex.exec(text);
+            let title = titleMatch ? `${titleMatch[1]}` : '';
+            if (title) {
+                if (title.includes('}')) {
+                title = title.replace(/}/g, '');
+            }
+            if (title.includes('{')) {
+                title = title.replace(/{/g, '');
+            }
+            }
+            title = titleMatch ? `\\at{\\textit{${title}}}` : '';
             // titleInfoから\textbackslashを削除
-            let title = titleMatch ? `\\at{\\textit{${titleMatch[1]}}}` : '';
             if (title.includes('\\textbackslash')) {
                 title = title.replace(/\\textbackslash /g, '');
             }
@@ -142,22 +252,58 @@
             // ジャーナル情報の抽出
             const journalRegex = /\\field{journaltitle}{(.*?)}\n/;
             const journalMatch = journalRegex.exec(text);
-            const journal = journalMatch ? `\\jt{${journalMatch[1]}}` : '';
+            let journal = journalMatch ? `${journalMatch[1]}` : '';
+            if (journal) {
+                if (journal.includes('}')) {
+                journal = journal.replace(/}/g, '');
+            }
+            if (journal.includes('{')) {
+                journal = journal.replace(/{/g, '');
+            }
+            }
+            journal = journalMatch ? `\\jt{${journal}}` : '';
 
             // 巻情報の抽出
             const volumeRegex = /\\field{volume}{(.*?)}\n/;
             const volumeMatch = volumeRegex.exec(text);
-            const volumeInfo = volumeMatch ? `\\bvol{${volumeMatch[1]}}` : '';
+            let volumeInfo = volumeMatch ? `${volumeMatch[1]}` : '';
+            if (volumeInfo) {
+                if (volumeInfo.includes('}')) {
+                volumeInfo = volumeInfo.replace(/}/g, '');
+            }
+            if (volumeInfo.includes('{')) {
+                volumeInfo = volumeInfo.replace(/{/g, '');
+            }
+            }
+            volumeInfo = volumeMatch ? `\\bvol{${volumeInfo}}` : '';
 
             // 号情報の抽出
             const numberRegex = /\\field{number}{(.*?)}\n/;
             const numberMatch = numberRegex.exec(text);
-            const numberInfo = numberMatch ? `(${numberMatch[1]})` : '';
+            let numberInfo = numberMatch ? `${numberMatch[1]}` : '';
+            if (numberInfo) {
+                if (numberInfo.includes('}')) {
+                numberInfo = numberInfo.replace(/}/g, '');
+            }
+            if (numberInfo.includes('{')) {
+                numberInfo = numberInfo.replace(/{/g, '');
+            }
+            }
+            numberInfo = numberMatch ? `(${numberInfo})` : '';
 
             // 年情報の抽出
             const yearRegex = /\\field{year}{(.*?)}\n/;
             const yearMatch = yearRegex.exec(text);
-            const yearInfo = yearMatch ? `(\\yr{${yearMatch[1]}})` : '';
+            let yearInfo = yearMatch ? `${yearMatch[1]}` : '';
+            if (yearInfo) {
+                if (yearInfo.includes('}')) {
+                yearInfo = yearInfo.replace(/}/g, '');
+            }
+            if (yearInfo.includes('{')) {
+                yearInfo = yearInfo.replace(/{/g, '');
+            }
+            }
+            yearInfo = yearMatch ? `(\\yr{${yearInfo}})` : '';
 
             // ページ情報の抽出
             const pagesRegex = /\\field{pages}{(.*?)}\n/;
@@ -187,7 +333,16 @@
             // シリーズ情報の抽出
             const seriesRegex = /\\field{series}{(.*?)}\n/;
             const seriesMatch = seriesRegex.exec(text);
-            const seriesInfo = seriesMatch ? `\\series{${seriesMatch[1]}}` : '';
+            let seriesInfo = seriesMatch ? `${seriesMatch[1]}` : '';
+            if (seriesInfo) {
+                if (seriesInfo.includes('}')) {
+                seriesInfo = seriesInfo.replace(/}/g, '');
+            }
+            if (seriesInfo.includes('{')) {
+                seriesInfo = seriesInfo.replace(/{/g, '');
+            }
+            }
+            seriesInfo = seriesMatch ? `\\series{${seriesInfo}}` : '';
 
             // edition情報の抽出
             const editionRegex = /\\field{edition}{(.*?)}\n/;
@@ -226,9 +381,6 @@
             if (seriesInfo) {
                 bibitem += `, ${seriesInfo}`;
             }
-            if (numberInfo) {
-                bibitem += ` ${numberInfo}.`;
-            }
             if (editionInfo) {
                 bibitem += ` ${editionInfo},`;
             } else {
@@ -237,7 +389,7 @@
             if (yearInfo) {
                 bibitem += ` ${yearInfo}`;
             }
-        } else if (entryType === 'article') {
+        } else if (entryType === 'article' && eprinttypeInfo !== 'arxiv') {
             if (journal) {
                 bibitem += `. ${journal}`;
             }
@@ -257,6 +409,7 @@
                 bibitem += ` ${urlInfo}`;
             }
         } else if (eprinttypeInfo === 'arxiv') {
+            bibitem += `, preprint,`;
             if (yearInfo) {
                 bibitem += ` ${yearInfo}.`;
             }
