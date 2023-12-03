@@ -70,6 +70,7 @@
         </p>
         <textarea id="inputText" rows="4" cols="50" placeholder="Paste your bbl file"></textarea>
         <div class="buttonContainer">
+            <button onclick="pasteFromClipboard()">Paste from Clipboard</button>
             <button onclick="getText()">Translate</button>
             <button onclick="refreshText()">Refresh</button>
             <button id="copyInputButton">Copy Input</button>
@@ -149,6 +150,11 @@
                     copyText.select();
                     document.execCommand("copy");
                 });
+
+                // クリップボードからテキストを取得する関数
+                function pasteFromClipboard() {
+                    navigator.clipboard.readText().then(text => document.getElementById("inputText").value = text);
+                }
                 
         // プレーンテキストから特定の情報を抽出してBibitem形式の文字列に変換する関数
         function convertToBibitem(text) {
@@ -224,7 +230,11 @@
                 if (i < n - 2) {
                     authors += ', ';
                 } else if (i === n - 2) {
-                    authors += ', and ';
+                    if (n === 2) {
+                        authors += ' and ';
+                    } else {
+                        authors += ', and ';
+                    }
                 }
             }
 
@@ -232,6 +242,7 @@
             const titleRegex = /\\field{title}{(.*?)}\n/;
             const titleMatch = titleRegex.exec(text);
             let title = titleMatch ? `${titleMatch[1]}` : '';
+            // titleから中括弧を削除
             if (title) {
                 if (title.includes('}')) {
                 title = title.replace(/}/g, '');
@@ -243,10 +254,13 @@
             title = titleMatch ? `\\at{\\textit{${title}}}` : '';
             // titleInfoから\textbackslashを削除
             if (title.includes('\\textbackslash')) {
-                title = title.replace(/\\textbackslash /g, '');
+                title = title.replace(/\\textbackslash /g, '\\');
             }
             if (title.includes('\\\$')) {
                 title = title.replace(/\\\$/g, '$');
+            }
+            if (title.includes('\\textquoteright')) {
+                title = title.replace(/\\textquoteright/g, '\'');
             }
 
             // ジャーナル情報の抽出
@@ -352,6 +366,7 @@
             // url情報の抽出
             const urlRegex = /\\verb (http.*?)\n/;
             const urlMatch = urlRegex.exec(text);
+            const url = urlMatch ? `${urlMatch[1]}` : '';
             const urlInfo = urlMatch ? `\\url{${urlMatch[1]}}` : '';
 
             // eprinttype情報の抽出
@@ -361,19 +376,21 @@
 
             // urlInfoからarxiv.orgのURLを抽出
             const arxivUrlRegex = /(https?:\/\/arxiv\.org\/[^\/]*\/(.*))/;
-            const arxivUrlMatch = arxivUrlRegex.exec(urlInfo);
+            const arxivUrlMatch = arxivUrlRegex.exec(url);
             let arxivnumberInfo = '';
             if (arxivUrlMatch) {
                 // URLの最後のスラッシュ以降を取得
                 const arxivNumber = arxivUrlMatch[2];
                 // arxivNumberをurlInfoのハイパーリンクとして設定
-                arxivnumberInfo = `arXiv: \\arxiv{\\href{${urlInfo}}{${arxivNumber}}}`;
+                arxivnumberInfo = `arXiv:\\arxiv{\\href{${url}}{${arxivNumber}}}`;
             } else {
                 arxivnumberInfo = null;
             }
 
+
+
         // Bibitemの生成
-        let bibitem = `\\bibitem[${label}]{${citationkey}}\n{${authors}} ${title}`;
+        let bibitem = `\\bibitem[${label}]{${citationkey}}\n{${authors}}, ${title}`;
         if (!entryType) {
             bibitem = 'Can Not Fined Entry';
         }
@@ -382,16 +399,19 @@
                 bibitem += `, ${seriesInfo}`;
             }
             if (editionInfo) {
-                bibitem += ` ${editionInfo},`;
+                bibitem += `, ${editionInfo}`;
             } else {
-                bibitem += ` ${numberInfo},`;
+                bibitem += `, ${numberInfo}`;
             }
             if (yearInfo) {
                 bibitem += ` ${yearInfo}`;
             }
+            if (publisherInfo) {
+                bibitem += ` ${publisherInfo}`;
+            }
         } else if (entryType === 'article' && eprinttypeInfo !== 'arxiv') {
             if (journal) {
-                bibitem += `. ${journal}`;
+                bibitem += `, ${journal}`;
             }
             if (volumeInfo) {
                 bibitem += `, ${volumeInfo}`;
@@ -403,10 +423,10 @@
                 bibitem += ` ${yearInfo}`;
             }
             if (pagesInfo) {
-                bibitem += `, ${pagesInfo}`;
+                bibitem += ` ${pagesInfo}`;
             }
             if (!journal && urlInfo) {
-                bibitem += ` ${urlInfo}`;
+                bibitem += `. ${urlInfo}`;
             }
         } else if (eprinttypeInfo === 'arxiv') {
             bibitem += `, preprint,`;
@@ -417,7 +437,16 @@
                 bibitem += ` ${arxivnumberInfo}`;
             }
         } else if (citationkey === `stacks-project`) {
-            bibitem = `\\bibitem[Sta]{stacks-project}\n{\\au{The Stacks Project Authors}} \\textit{\\ti{Stacks Project}}. \\url{https://stacks.math.columbia.edu}`;
+            bibitem = `\\bibitem[Sta]{stacks-project}\n{\\au{The Stacks Project Authors}}, \\at{\\textit{Stacks Project}}. \\url{https://stacks.math.columbia.edu}`;
+        } else if (eprinttypeInfo !== 'arxiv' && entryType === 'misc') {
+            if (yearInfo) {
+                bibitem += `, ${yearInfo}.`;
+            } else {
+                bibitem += '.';
+            }
+            if (urlInfo) {
+                bibitem += ` ${urlInfo}`;
+            }
         }
         bibitem += '.\n\n';
 
