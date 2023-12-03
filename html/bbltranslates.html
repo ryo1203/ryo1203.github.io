@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>bbl translates to bibitem</title>
+    <link rel="stylesheet" type="text/css" href="../styles.css">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            color: #444;
+            -webkit-font-smoothing: antialiased;
+            background: #f0f0f0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        #inputText, #displayText {
+            width: 60%;
+            height: 30%;
+            resize: none;
+            border: 2px solid gray;
+            font-size: 15px; /* 文字サイズを大きくする */
+        }
+        .buttonContainer {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        button {
+            background-color: #ffffff; /* ボタンの背景色を白に設定 */
+            color: #000000; /* ボタンの文字色を黒に設定 */
+            border: 1px solid #000000; /* ボタンのボーダーを黒に設定 */
+            font-size: 15px; /* ボタンの文字の大きさを15pxに設定 */
+        }
+
+        button:hover {
+            background-color: #dddddd; /* ホバー時のボタンの背景色を濃い灰色に設定 */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p>.bbl translates to bibitem.</p>
+        <textarea id="inputText" rows="4" cols="50" placeholder="Paste your bbl"></textarea>
+        <div class="buttonContainer">
+            <button onclick="getText()">Translate</button>
+            <button onclick="refreshText()">Refresh</button>
+        </div>
+        <textarea id="displayText" rows="4" cols="50" readonly></textarea>
+        <div class="buttonContainer">
+            <button id="copyButton">Copy</button>
+        </div>
+    </div>
+
+    <script>
+        function getText() {
+            var text = document.getElementById("inputText").value;
+            var entries = text.split('\\endentry'); // テキストを\endentryで区切る
+            var convertedText = '';
+            for (var i = 0; i < entries.length; i++) {
+                if (entries[i].trim() !== '') {
+                    convertedText += convertToBibitem(entries[i] + '\\endentry'); // 各エントリに対してconvertToBibitemを適用
+                }
+            }
+            document.getElementById("displayText").value = convertedText; // 変換した文字列を表示
+        }
+
+                function refreshText() {
+                    document.getElementById("inputText").value = '';
+                }
+
+                document.getElementById("copyButton").addEventListener("click", function() {
+                    var copyText = document.getElementById("displayText");
+                    copyText.select();
+                    document.execCommand("copy");
+                });
+                
+        // プレーンテキストから特定の情報を抽出してBibitem形式の文字列に変換する関数
+        function convertToBibitem(text) {
+
+            // エントリータイプの抽出
+            const entryTypeRegex = /\\entry{.*?}{(.*?)}/;
+            const entryTypeMatch = entryTypeRegex.exec(text);
+            const entryType = entryTypeMatch ? entryTypeMatch[1] : '';
+
+            // ラベル情報の抽出
+            const labelRegex = /\\field{labelalpha}{(.*?)}\n/;
+            const labelMatch = labelRegex.exec(text);
+            const label = labelMatch ? labelMatch[1] : '';
+
+            // citationkey情報の抽出
+            const citationkeyRegex = /\\entry{(.*?)}/;
+            const citationkeyMatch = citationkeyRegex.exec(text);
+            const citationkey = citationkeyMatch ? citationkeyMatch[1] : '';
+
+            // \\name{author}{n}のnを取得
+            const nameRegex = /\\name{author}{(\d+)}/;
+            const nameMatch = nameRegex.exec(text);
+            const n = nameMatch ? parseInt(nameMatch[1]) : 0;
+
+            let authors = '';
+            for (let i = 1; i <= n; i++) {
+                // 著者familyname情報の抽出
+                const authorfamilyRegex = /family={(.*?)},\n/;
+                const authorfamilyMatch = authorfamilyRegex.exec(text);
+                const authorfamily = authorfamilyMatch ? authorfamilyMatch[1] : '';
+
+                // 著者giveniname情報の抽出
+                const authorgiveniRegex = /giveni={(.*?)}/;
+                const authorgiveniMatch = authorgiveniRegex.exec(text);
+                let authorgiveni = authorgiveniMatch ? authorgiveniMatch[1] : '';
+                // \\bibinitperiodを取り除く
+                authorgiveni = authorgiveni.replace('\\bibinitperiod', '');
+
+                authors += `\\au{${authorgiveni}. ${authorfamily}}`;
+                if (i < n - 1) {
+                    authors += ', ';
+                } else if (i === n - 1) {
+                    authors += ', and ';
+                }
+            }
+
+            // タイトル情報の抽出
+            const titleRegex = /\\field{title}{(.*?)}\n/;
+            const titleMatch = titleRegex.exec(text);
+            // titleInfoから\textbackslashを削除
+            let title = titleMatch ? `\\at{\\textit{${titleMatch[1]}}}` : '';
+            if (title.includes('\\textbackslash')) {
+                title = title.replace(/\\textbackslash /g, '');
+            }
+            if (title.includes('\\\$')) {
+                title = title.replace(/\\\$/g, '$');
+            }
+
+            // ジャーナル情報の抽出
+            const journalRegex = /\\field{journaltitle}{(.*?)}\n/;
+            const journalMatch = journalRegex.exec(text);
+            const journal = journalMatch ? `\\jt{${journalMatch[1]}}` : '';
+
+            // 巻情報の抽出
+            const volumeRegex = /\\field{volume}{(.*?)}\n/;
+            const volumeMatch = volumeRegex.exec(text);
+            const volumeInfo = volumeMatch ? `\\bvol{${volumeMatch[1]}}` : '';
+
+            // 号情報の抽出
+            const numberRegex = /\\field{number}{(.*?)}\n/;
+            const numberMatch = numberRegex.exec(text);
+            const numberInfo = numberMatch ? `(${numberMatch[1]})` : '';
+
+            // 年情報の抽出
+            const yearRegex = /\\field{year}{(.*?)}\n/;
+            const yearMatch = yearRegex.exec(text);
+            const yearInfo = yearMatch ? `(\\yr{${yearMatch[1]}})` : '';
+
+            // ページ情報の抽出
+            const pagesRegex = /\\field{pages}{(.*?)}\n/;
+            const pagesMatch = pagesRegex.exec(text);
+            let pagesInfo = '';
+            let pages = '';
+            if (pagesMatch) {
+                if (pagesMatch[1].includes('\\bibrangedash')) {
+                    pages = pagesMatch[1].split('\\bibrangedash').map(page => `{${page.trim()}}`).join('--'); // bibrangedashを削除してからハイフンを追加
+                } else {
+                    pages = `${pagesMatch[1]}`;
+                }
+            }
+            pagesInfo = pages ? `\\pg{${pages}}` : '';
+
+            // 出版社情報の抽出
+            const publisherRegex = /\\list{publisher}{\d+}{%\n        {([\s\S]*?)}%/;
+            const publisherMatch = publisherRegex.exec(text);
+            const publisherInfo = publisherMatch ? `\\publ{${publisherMatch[1]}}` : '';
+
+            // if (publisherInfo) {
+            //     console.log(publisherInfo);
+            // }else{
+            //     console.log("no publisher");
+            // }
+
+            // シリーズ情報の抽出
+            const seriesRegex = /\\field{series}{(.*?)}\n/;
+            const seriesMatch = seriesRegex.exec(text);
+            const seriesInfo = seriesMatch ? `\\series{${seriesMatch[1]}}` : '';
+
+            // edition情報の抽出
+            const editionRegex = /\\field{edition}{(.*?)}\n/;
+            const editionMatch = editionRegex.exec(text);
+            const editionInfo = editionMatch ? `\\ed{${editionMatch[1]}}` : '';
+
+            // url情報の抽出
+            const urlRegex = /\\verb (http.*?)\n/;
+            const urlMatch = urlRegex.exec(text);
+            const urlInfo = urlMatch ? `\\url{${urlMatch[1]}}` : '';
+
+            // eprinttype情報の抽出
+            const eprinttypeRegex = /\\field{eprinttype}{(.*?)}\n/;
+            const eprinttypeMatch = eprinttypeRegex.exec(text);
+            const eprinttypeInfo = eprinttypeMatch ? `${eprinttypeMatch[1]}` : '';
+
+            // urlInfoからarxiv.orgのURLを抽出
+            const arxivUrlRegex = /(https?:\/\/arxiv\.org\/[^\/]*\/(.*))/;
+            const arxivUrlMatch = arxivUrlRegex.exec(urlInfo);
+            let arxivnumberInfo = '';
+            if (arxivUrlMatch) {
+                // URLの最後のスラッシュ以降を取得
+                const arxivNumber = arxivUrlMatch[2];
+                // arxivNumberをurlInfoのハイパーリンクとして設定
+                arxivnumberInfo = `arXiv: \\arxiv{\\href{${urlInfo}}{${arxivNumber}}}`;
+            } else {
+                arxivnumberInfo = null;
+            }
+
+        // Bibitemの生成
+        let bibitem = `\\bibitem[${label}]{${citationkey}}\n{${authors}} ${title}`;
+        if (!entryType) {
+            bibitem = 'Can Not Fined Entry';
+        }
+        else if (entryType === 'book') {
+            if (seriesInfo) {
+                bibitem += `, ${seriesInfo}`;
+            }
+            if (numberInfo) {
+                bibitem += ` ${numberInfo}.`;
+            }
+            if (editionInfo) {
+                bibitem += ` ${editionInfo},`;
+            } else {
+                bibitem += ` ${numberInfo},`;
+            }
+            if (yearInfo) {
+                bibitem += ` ${yearInfo}`;
+            }
+        } else if (entryType === 'article') {
+            if (journal) {
+                bibitem += `. ${journal}`;
+            }
+            if (volumeInfo) {
+                bibitem += `, ${volumeInfo}`;
+            }
+            if (numberInfo) {
+                bibitem += `${numberInfo}`;
+            }
+            if (yearInfo) {
+                bibitem += ` ${yearInfo}`;
+            }
+            if (pagesInfo) {
+                bibitem += `, ${pagesInfo}`;
+            }
+            if (!journal && urlInfo) {
+                bibitem += ` ${urlInfo}`;
+            }
+        } else if (eprinttypeInfo === 'arxiv') {
+            if (yearInfo) {
+                bibitem += ` ${yearInfo}.`;
+            }
+            if (arxivnumberInfo) {
+                bibitem += ` ${arxivnumberInfo}`;
+            }
+        } else if (citationkey === `stacks-project`) {
+            bibitem = `\\bibitem[Sta]{stacks-project}\n{\\au{The Stacks Project Authors}} \\textit{\\ti{Stacks Project}}. \\url{https://stacks.math.columbia.edu}`;
+        }
+        bibitem += '.\n\n';
+
+        return bibitem;
+        }
+    </script>
+</body>
+</html>
