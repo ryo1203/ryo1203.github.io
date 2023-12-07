@@ -1,4 +1,4 @@
-This is e-upTeX, Version 3.141592653-p4.0.0-u1.28-220214-2.6 (utf8.uptex) (TeX Live 2022) (preloaded format=uplatex 2022.9.17)  14 OCT 2023 12:26
+This is e-upTeX, Version 3.141592653-p4.0.0-u1.28-220214-2.6 (utf8.uptex) (TeX Live 2022) (preloaded format=uplatex 2022.9.17)  7 DEC 2023 15:56
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1041,18 +1041,20 @@ LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 203.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
-(Font)              No change on input line 206.
+(Font)              No change on input line 205.
+LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
+(Font)              No change on input line 208.
  [1
 
 ]
 LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
-(Font)              No change on input line 215.
-LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <9> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 215.
-LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
-(Font)              No change on input line 216.
-LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
 (Font)              No change on input line 217.
+LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <9> not available
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 217.
+LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
+(Font)              No change on input line 218.
+LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
+(Font)              No change on input line 219.
  [2] (./CV.aux)
 Package rerunfilecheck Info: File `CV.out' has not changed.
 (rerunfilecheck)             Checksum: 5D2E8CD53FF2060823A10201C07240AE;561.
@@ -1068,6 +1070,6 @@ Here is how much of TeX's memory you used:
  50886 multiletter control sequences out of 15000+600000
  525279 words of font info for 83 fonts, out of 8000000 for 9000
  929 hyphenation exceptions out of 8191
- 129i,12n,122p,717b,1757s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 129i,11n,122p,717b,1757s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on CV.dvi (2 pages, 48096 bytes).
+Output written on CV.dvi (2 pages, 48336 bytes).
