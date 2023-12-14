@@ -377,6 +377,20 @@
             }
             seriesInfo = seriesMatch ? `\\series{${seriesInfo}}` : '';
 
+            //booktitle情報の抽出
+            const booktitleRegex = /\\field{booktitle}{(.*?)}\n/;
+            const booktitleMatch = booktitleRegex.exec(text);
+            let booktitleInfo = booktitleMatch ? `${booktitleMatch[1]}` : '';
+            if (booktitleInfo) {
+                if (booktitleInfo.includes('}')) {
+                    booktitleInfo = booktitleInfo.replace(/}/g, '');
+                }
+                if (booktitleInfo.includes('{')) {
+                    booktitleInfo = booktitleInfo.replace(/{/g, '');
+                }
+            }
+            booktitleInfo = booktitleMatch ? `\\bt{${booktitleInfo}}` : '';
+
             // edition情報の抽出
             const editionRegex = /\\field{edition}{(.*?)}\n/;
             const editionMatch = editionRegex.exec(text);
@@ -446,6 +460,25 @@
                 }
                 if (!journal && urlInfo) {
                     bibitem += `. ${urlInfo}`;
+                }
+            } else if (entryType === 'inproceedings') {
+                if (booktitleInfo) {
+                    bibitem += `, ${booktitleInfo}`;
+                }
+                if (volumeInfo) {
+                    bibitem += `, ${volumeInfo}`;
+                }
+                if (seriesInfo) {
+                    bibitem += `, ${seriesInfo}`;
+                }
+                if (publisherInfo) {
+                    bibitem += `, ${publisherInfo}`;
+                }
+                if (yearInfo) {
+                    bibitem += `, ${yearInfo}`;
+                }
+                if (pagesInfo) {
+                    bibitem += `, ${pagesInfo}`;
                 }
             } else if (eprinttypeInfo === 'arxiv') {
                 bibitem += `, preprint,`;
