@@ -480,6 +480,19 @@
                 if (pagesInfo) {
                     bibitem += `, ${pagesInfo}`;
                 }
+            } else if (eprinttypeInfo === 'incollection') {
+                if (booktitleInfo) {
+                    bibitem += `, ${booktitleInfo}`;
+                }
+                if (volumeInfo) {
+                    bibitem += `, ${volumeInfo}`;
+                }
+                if (yearInfo) {
+                    bibitem += `, ${yearInfo}`;
+                }
+                if (pagesInfo) {
+                    bibitem += `, ${pagesInfo}`;
+                }
             } else if (eprinttypeInfo === 'arxiv') {
                 bibitem += `, preprint,`;
                 if (yearInfo) {
