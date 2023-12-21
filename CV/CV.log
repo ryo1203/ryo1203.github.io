@@ -1,4 +1,4 @@
-This is e-upTeX, Version 3.141592653-p4.0.0-u1.28-220214-2.6 (utf8.uptex) (TeX Live 2022) (preloaded format=uplatex 2022.9.17)  7 DEC 2023 15:56
+This is e-upTeX, Version 3.141592653-p4.0.0-u1.28-220214-2.6 (utf8.uptex) (TeX Live 2022) (preloaded format=uplatex 2022.9.17)  21 DEC 2023 18:31
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1072,4 +1072,4 @@ Here is how much of TeX's memory you used:
  929 hyphenation exceptions out of 8191
  129i,11n,122p,717b,1757s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on CV.dvi (2 pages, 48336 bytes).
+Output written on CV.dvi (2 pages, 48320 bytes).
