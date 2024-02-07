@@ -48,7 +48,13 @@
 
 % biblatex
 % safeinputenc is needed
-\usepackage[backend=biber, sorting=none, safeinputenc]{biblatex}
+\usepackage[backend=biber, sorting=none, maxbibnames=99, safeinputenc, url=false]{biblatex}
+\DeclareFieldFormat{pages}{#1}
+\DeclareFieldFormat{postnote}{#1}
+\DeclareFieldFormat{multipostnote}{#1} % citeのときにp.を表示させない。
+\DeclareFieldFormat[article]{title}{\mkbibemph{#1}} % titleのフォントをイタリックにする。
+% \DeclareFieldFormat*{title}{\mkbibquote{#1\adddot}}  % タイトルにダブルクオーテーションをつける
+\DeclareFieldFormat{journaltitle}{\textup{#1}\addcomma\space} % journalのフォントをローマンフォントにする。
 \addbibresource{publications.bib}
 
 % load after babel and biblatex
@@ -168,7 +174,7 @@ mathematics).
 
 
 \nocite{*}
-\printbibliography[title={Preprints}]
+\printbibliography[title={Papers and Preprints}]
 
 
 % Publications from a BibTeX file using the multibib package

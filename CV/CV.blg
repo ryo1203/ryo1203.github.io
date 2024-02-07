@@ -1,20 +1,18 @@
 [0] Config.pm:306> INFO - This is Biber 2.18
-[1] Config.pm:309> INFO - Logfile is 'CV.blg'
-[470] biber-MSWIN32:340> INFO - === 
-[629] Biber.pm:418> INFO - Reading 'CV.bcf'
-[935] Biber.pm:975> INFO - Using all citekeys in bib section 0
-[978] Biber.pm:4401> INFO - Processing section 0
-[1032] Biber.pm:4592> INFO - Looking for bibtex file 'publications.bib' for section 0
-[1119] bibtex.pm:1713> INFO - LaTeX decoding ...
-[1146] bibtex.pm:1518> INFO - Found BibTeX data source 'publications.bib'
-[1303] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[1303] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[1303] Biber.pm:4221> INFO - Sorting list 'none/global//global/global' of type 'entry' with template 'none' and locale 'en-US'
-[1304] Biber.pm:4227> INFO - No sort tailoring available for locale 'en-US'
-[1309] bbl.pm:654> INFO - Writing 'CV.bbl' with encoding 'ascii'
-[1309] bbl.pm:655> INFO - Converting UTF-8 to TeX macros on output to .bbl
-[1318] bbl.pm:757> INFO - Output to CV.bbl
-[1319] Biber.pm:130> WARN - legacy year field 'arXiv:2303.13872' in entry 'misc1' is not an integer - this will probably not sort properly.
-[1319] Biber.pm:130> WARN - legacy year field 'arXiv:2305.07916' in entry 'misc2' is not an integer - this will probably not sort properly.
-[1319] Biber.pm:130> WARN - legacy year field 'arXiv:2308.09600' in entry 'misc3' is not an integer - this will probably not sort properly.
-[1319] Biber.pm:132> INFO - WARNINGS: 3
+[0] Config.pm:309> INFO - Logfile is 'CV.blg'
+[244] biber-MSWIN32:340> INFO - === 
+[317] Biber.pm:418> INFO - Reading 'CV.bcf'
+[577] Biber.pm:975> INFO - Using all citekeys in bib section 0
+[623] Biber.pm:4401> INFO - Processing section 0
+[652] Biber.pm:4592> INFO - Looking for bibtex file 'publications.bib' for section 0
+[749] bibtex.pm:1713> INFO - LaTeX decoding ...
+[777] bibtex.pm:1518> INFO - Found BibTeX data source 'publications.bib'
+[888] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[889] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[889] Biber.pm:4221> INFO - Sorting list 'none/global//global/global' of type 'entry' with template 'none' and locale 'en-US'
+[889] Biber.pm:4227> INFO - No sort tailoring available for locale 'en-US'
+[905] bbl.pm:654> INFO - Writing 'CV.bbl' with encoding 'ascii'
+[906] bbl.pm:655> INFO - Converting UTF-8 to TeX macros on output to .bbl
+[917] bbl.pm:757> INFO - Output to CV.bbl
+[917] Biber.pm:130> WARN - legacy year field 'to appear in Nagoya Math. J.' in entry 'misc2' is not an integer - this will probably not sort properly.
+[917] Biber.pm:132> INFO - WARNINGS: 1

@@ -1,4 +1,4 @@
-This is e-upTeX, Version 3.141592653-p4.0.0-u1.28-220214-2.6 (utf8.uptex) (TeX Live 2022) (preloaded format=uplatex 2022.9.17)  29 DEC 2023 11:55
+This is e-upTeX, Version 3.141592653-p4.0.0-u1.28-220214-2.6 (utf8.uptex) (TeX Live 2022) (preloaded format=uplatex 2022.9.17)  7 FEB 2024 17:29
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -828,41 +828,41 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 28
 )
 \Hy@SectionHShift=\skip118
 ))
-Package hyperref Info: Option `breaklinks' set `true' on input line 143.
-Package hyperref Info: Option `bookmarksopen' set `true' on input line 143.
+Package hyperref Info: Option `breaklinks' set `true' on input line 149.
+Package hyperref Info: Option `bookmarksopen' set `true' on input line 149.
 Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... found 'babel' package.
 Package csquotes Info: Adjusting default style.
 Package csquotes Info: Redefining alias 'default' -> 'english'.
-LaTeX Font Info:    Trying to load font information for T1+lmr on input line 143.
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 149.
  (c:/texlive/2022/texmf-dist/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) (./CV.aux)
 \openout1 = `CV.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 143.
-LaTeX Font Info:    ... okay on input line 143.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 143.
-LaTeX Font Info:    ... okay on input line 143.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 143.
-LaTeX Font Info:    ... okay on input line 143.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 143.
-LaTeX Font Info:    ... okay on input line 143.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 143.
-LaTeX Font Info:    ... okay on input line 143.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 143.
-LaTeX Font Info:    ... okay on input line 143.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 143.
-LaTeX Font Info:    ... okay on input line 143.
-LaTeX Font Info:    Checking defaults for JY2/mc/m/n on input line 143.
-LaTeX Font Info:    ... okay on input line 143.
-LaTeX Font Info:    Checking defaults for JT2/mc/m/n on input line 143.
-LaTeX Font Info:    ... okay on input line 143.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 143.
-LaTeX Font Info:    ... okay on input line 143.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 143.
-LaTeX Font Info:    ... okay on input line 143.
-LaTeX Font Info:    Trying to load font information for T1+lmss on input line 143.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 149.
+LaTeX Font Info:    ... okay on input line 149.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 149.
+LaTeX Font Info:    ... okay on input line 149.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 149.
+LaTeX Font Info:    ... okay on input line 149.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 149.
+LaTeX Font Info:    ... okay on input line 149.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 149.
+LaTeX Font Info:    ... okay on input line 149.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 149.
+LaTeX Font Info:    ... okay on input line 149.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 149.
+LaTeX Font Info:    ... okay on input line 149.
+LaTeX Font Info:    Checking defaults for JY2/mc/m/n on input line 149.
+LaTeX Font Info:    ... okay on input line 149.
+LaTeX Font Info:    Checking defaults for JT2/mc/m/n on input line 149.
+LaTeX Font Info:    ... okay on input line 149.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 149.
+LaTeX Font Info:    ... okay on input line 149.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 149.
+LaTeX Font Info:    ... okay on input line 149.
+LaTeX Font Info:    Trying to load font information for T1+lmss on input line 149.
  (c:/texlive/2022/texmf-dist/tex/latex/lm/t1lmss.fd
 File: t1lmss.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
@@ -915,119 +915,117 @@ Package biblatex Info: Input encoding 'ascii' forced by
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'CV.bbl' found.
  (./CV.bbl)
-Package biblatex Info: Reference section=0 on input line 143.
-Package biblatex Info: Reference segment=0 on input line 143.
-Package hyperref Info: Link coloring OFF on input line 143.
+Package biblatex Info: Reference section=0 on input line 149.
+Package biblatex Info: Reference segment=0 on input line 149.
+Package hyperref Info: Link coloring OFF on input line 149.
  (./CV.out) (./CV.out)
 \@outlinefile=\write5
 \openout5 = `CV.out'.
 
 LaTeX Font Info:    Font shape `JT2/mc/m/n' will be
-(Font)              scaled to size 19.95642pt on input line 146.
+(Font)              scaled to size 19.95642pt on input line 152.
 LaTeX Font Info:    Font shape `JY2/mc/m/n' will be
-(Font)              scaled to size 19.95642pt on input line 146.
+(Font)              scaled to size 19.95642pt on input line 152.
 LaTeX Font Info:    Font shape `JT2/mc/b/n' in size <20.74> not available
-(Font)              Font shape `JT2/mc/bx/n' tried instead on input line 146.
+(Font)              Font shape `JT2/mc/bx/n' tried instead on input line 152.
 LaTeX Font Info:    Font shape `JT2/mc/bx/n' in size <20.74> not available
-(Font)              Font shape `JT2/gt/m/n' tried instead on input line 146.
+(Font)              Font shape `JT2/gt/m/n' tried instead on input line 152.
 LaTeX Font Info:    Font shape `JT2/gt/m/n' will be
-(Font)              scaled to size 19.95642pt on input line 146.
+(Font)              scaled to size 19.95642pt on input line 152.
 LaTeX Font Info:    Font shape `JY2/mc/b/n' in size <20.74> not available
-(Font)              Font shape `JY2/mc/bx/n' tried instead on input line 146.
+(Font)              Font shape `JY2/mc/bx/n' tried instead on input line 152.
 LaTeX Font Info:    Font shape `JY2/mc/bx/n' in size <20.74> not available
-(Font)              Font shape `JY2/gt/m/n' tried instead on input line 146.
+(Font)              Font shape `JY2/gt/m/n' tried instead on input line 152.
 LaTeX Font Info:    Font shape `JY2/gt/m/n' will be
-(Font)              scaled to size 19.95642pt on input line 146.
+(Font)              scaled to size 19.95642pt on input line 152.
 LaTeX Font Info:    Font shape `T1/lmss/b/n' in size <20.74> not available
-(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 146.
+(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 152.
 LaTeX Font Info:    Font shape `JT2/mc/m/n' will be
-(Font)              scaled to size 11.54663pt on input line 146.
+(Font)              scaled to size 11.54663pt on input line 152.
 LaTeX Font Info:    Font shape `JY2/mc/m/n' will be
-(Font)              scaled to size 11.54663pt on input line 146.
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 146.
+(Font)              scaled to size 11.54663pt on input line 152.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 152.
  (c:/texlive/2022/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 146.
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 152.
  (c:/texlive/2022/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 146.
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 152.
  (c:/texlive/2022/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 146.
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 152.
  (c:/texlive/2022/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 146.
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 152.
  (c:/texlive/2022/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 146.
+(Font)              <10> on input line 152.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 146.
+(Font)              <7> on input line 152.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 146.
+(Font)              <5> on input line 152.
 LaTeX Font Info:    Font shape `JT2/mc/m/n' will be
-(Font)              scaled to size 13.85594pt on input line 148.
+(Font)              scaled to size 13.85594pt on input line 154.
 LaTeX Font Info:    Font shape `JY2/mc/m/n' will be
-(Font)              scaled to size 13.85594pt on input line 148.
+(Font)              scaled to size 13.85594pt on input line 154.
 LaTeX Font Info:    Font shape `JT2/mc/b/n' in size <14.4> not available
-(Font)              Font shape `JT2/mc/bx/n' tried instead on input line 148.
+(Font)              Font shape `JT2/mc/bx/n' tried instead on input line 154.
 LaTeX Font Info:    Font shape `JT2/mc/bx/n' in size <14.4> not available
-(Font)              Font shape `JT2/gt/m/n' tried instead on input line 148.
+(Font)              Font shape `JT2/gt/m/n' tried instead on input line 154.
 LaTeX Font Info:    Font shape `JT2/gt/m/n' will be
-(Font)              scaled to size 13.85594pt on input line 148.
+(Font)              scaled to size 13.85594pt on input line 154.
 LaTeX Font Info:    Font shape `JY2/mc/b/n' in size <14.4> not available
-(Font)              Font shape `JY2/mc/bx/n' tried instead on input line 148.
+(Font)              Font shape `JY2/mc/bx/n' tried instead on input line 154.
 LaTeX Font Info:    Font shape `JY2/mc/bx/n' in size <14.4> not available
-(Font)              Font shape `JY2/gt/m/n' tried instead on input line 148.
+(Font)              Font shape `JY2/gt/m/n' tried instead on input line 154.
 LaTeX Font Info:    Font shape `JY2/gt/m/n' will be
-(Font)              scaled to size 13.85594pt on input line 148.
+(Font)              scaled to size 13.85594pt on input line 154.
 LaTeX Font Info:    Font shape `T1/lmss/b/n' in size <14.4> not available
-(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 148.
+(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 154.
 LaTeX Font Info:    Font shape `JT2/mc/b/n' in size <10> not available
-(Font)              Font shape `JT2/mc/bx/n' tried instead on input line 149.
+(Font)              Font shape `JT2/mc/bx/n' tried instead on input line 155.
 LaTeX Font Info:    Font shape `JT2/mc/bx/n' in size <10> not available
-(Font)              Font shape `JT2/gt/m/n' tried instead on input line 149.
+(Font)              Font shape `JT2/gt/m/n' tried instead on input line 155.
 LaTeX Font Info:    Font shape `JT2/gt/m/n' will be
-(Font)              scaled to size 9.6222pt on input line 149.
+(Font)              scaled to size 9.6222pt on input line 155.
 LaTeX Font Info:    Font shape `JY2/mc/b/n' in size <10> not available
-(Font)              Font shape `JY2/mc/bx/n' tried instead on input line 149.
+(Font)              Font shape `JY2/mc/bx/n' tried instead on input line 155.
 LaTeX Font Info:    Font shape `JY2/mc/bx/n' in size <10> not available
-(Font)              Font shape `JY2/gt/m/n' tried instead on input line 149.
+(Font)              Font shape `JY2/gt/m/n' tried instead on input line 155.
 LaTeX Font Info:    Font shape `JY2/gt/m/n' will be
-(Font)              scaled to size 9.6222pt on input line 149.
+(Font)              scaled to size 9.6222pt on input line 155.
 LaTeX Font Info:    Font shape `T1/lmss/b/n' in size <10> not available
-(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 149.
+(Font)              Font shape `T1/lmss/bx/n' tried instead on input line 155.
 LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
-(Font)              No change on input line 149.
+(Font)              No change on input line 155.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <10> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 149.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 155.
 LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
-(Font)              No change on input line 149.
+(Font)              No change on input line 155.
 LaTeX Font Info:    Font shape `JT2/mc/m/n' will be
-(Font)              scaled to size 8.65997pt on input line 149.
+(Font)              scaled to size 8.65997pt on input line 155.
 LaTeX Font Info:    Font shape `JY2/mc/m/n' will be
-(Font)              scaled to size 8.65997pt on input line 149.
+(Font)              scaled to size 8.65997pt on input line 155.
 LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
-(Font)              No change on input line 150.
+(Font)              No change on input line 156.
 LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
-(Font)              No change on input line 150.
+(Font)              No change on input line 156.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
-(Font)              No change on input line 171.
+(Font)              No change on input line 177.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 177.
+ (c:/texlive/2022/texmf-dist/tex/latex/lm/t1lmtt.fd
+File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
-(Font)              No change on input line 171.
+(Font)              No change on input line 177.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
-(Font)              No change on input line 171.
-LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
-(Font)              No change on input line 187.
-LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
-(Font)              No change on input line 189.
-LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
-(Font)              No change on input line 191.
+(Font)              No change on input line 177.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 193.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
@@ -1044,36 +1042,42 @@ LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 205.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 207.
+LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
+(Font)              No change on input line 209.
+LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
+(Font)              No change on input line 211.
  [1
 
 ]
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
-(Font)              No change on input line 209.
+(Font)              No change on input line 213.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
-(Font)              No change on input line 212.
+(Font)              No change on input line 215.
+LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
+(Font)              No change on input line 218.
 LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
-(Font)              No change on input line 221.
+(Font)              No change on input line 227.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <9> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 221.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 227.
 LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
-(Font)              No change on input line 222.
+(Font)              No change on input line 228.
 LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
-(Font)              No change on input line 223.
+(Font)              No change on input line 229.
  [2] (./CV.aux)
 Package rerunfilecheck Info: File `CV.out' has not changed.
-(rerunfilecheck)             Checksum: 5D2E8CD53FF2060823A10201C07240AE;561.
+(rerunfilecheck)             Checksum: D8EB056EB03B583C626AFE13DE173ECE;622.
 Package logreq Info: Writing requests to 'CV.run.xml'.
 \openout1 = `CV.run.xml'.
 
  )
 (\end occurred when \iffalse on line 31 was incomplete) 
 Here is how much of TeX's memory you used:
- 29763 strings out of 475526
- 572479 string characters out of 5794121
- 1365730 words of memory out of 5000000
- 50886 multiletter control sequences out of 15000+600000
- 525279 words of font info for 83 fonts, out of 8000000 for 9000
+ 29809 strings out of 475526
+ 573201 string characters out of 5794121
+ 1365791 words of memory out of 5000000
+ 50928 multiletter control sequences out of 15000+600000
+ 525598 words of font info for 84 fonts, out of 8000000 for 9000
  929 hyphenation exceptions out of 8191
  129i,11n,122p,717b,1757s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on CV.dvi (2 pages, 48872 bytes).
+Output written on CV.dvi (2 pages, 49828 bytes).

@@ -28,6 +28,9 @@
            family={\textbf{R.Ishizuka}},
            familyi={R\bibinitperiod}}}%
       }
+      \list{publisher}{1}{%
+        {arXiv}%
+      }
       \strng{namehash}{c03cb8d5348905dbdbe2372562021f1d}
       \strng{fullhash}{c03cb8d5348905dbdbe2372562021f1d}
       \strng{bibnamehash}{c03cb8d5348905dbdbe2372562021f1d}
@@ -38,15 +41,28 @@
       \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
+      \field{eprinttype}{arxiv}
+      \field{number}{arXiv:2308.09600}
       \field{title}{Tilting and untilting for ideals in perfectoid rings}
-      \field{year}{arXiv:2308.09600}
       \true{nocite}
+      \verb{eprint}
+      \verb 2308.0960
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2308.09600
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2308.09600
+      \endverb
     \endentry
     \entry{misc2}{misc}{}
       \name{author}{1}{}{%
         {{hash=c8e162824f6ab94cfb9981fbbc68a9f5}{%
            family={\textbf{R.Ishizuka}},
            familyi={R\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {arXiv}%
       }
       \strng{namehash}{c8e162824f6ab94cfb9981fbbc68a9f5}
       \strng{fullhash}{c8e162824f6ab94cfb9981fbbc68a9f5}
@@ -58,9 +74,20 @@
       \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
+      \field{eprinttype}{arxiv}
+      \field{number}{arXiv:2305.07916}
       \field{title}{A calculation of the perfectoidization of semiperfectoid rings}
-      \field{year}{arXiv:2305.07916}
+      \field{year}{to appear in Nagoya Math. J.}
       \true{nocite}
+      \verb{eprint}
+      \verb 2305.07916
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2305.07916
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2305.07916
+      \endverb
     \endentry
     \entry{misc1}{misc}{}
       \name{author}{2}{}{%
@@ -70,6 +97,9 @@
         {{hash=ef785e8a278069618c75c8a9f41bd514}{%
            family={K.Shimomoto},
            familyi={K\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {arXiv}%
       }
       \strng{namehash}{a3c8f412291a864cd5216d82f8862b2d}
       \strng{fullhash}{a3c8f412291a864cd5216d82f8862b2d}
@@ -81,9 +111,19 @@
       \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
+      \field{eprinttype}{arxiv}
+      \field{number}{arxiv:2303.13872}
       \field{title}{A mixed characteristic analogue of the perfection of rings and its almost Cohen-Macaulay property}
-      \field{year}{arXiv:2303.13872}
       \true{nocite}
+      \verb{eprint}
+      \verb 2303.13872
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2303.13872
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2303.13872
+      \endverb
     \endentry
   \enddatalist
 \endrefsection
