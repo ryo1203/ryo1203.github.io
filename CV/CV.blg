@@ -1,18 +1,19 @@
 [0] Config.pm:306> INFO - This is Biber 2.18
 [0] Config.pm:309> INFO - Logfile is 'CV.blg'
-[244] biber-MSWIN32:340> INFO - === 
-[317] Biber.pm:418> INFO - Reading 'CV.bcf'
-[577] Biber.pm:975> INFO - Using all citekeys in bib section 0
-[623] Biber.pm:4401> INFO - Processing section 0
-[652] Biber.pm:4592> INFO - Looking for bibtex file 'publications.bib' for section 0
-[749] bibtex.pm:1713> INFO - LaTeX decoding ...
-[777] bibtex.pm:1518> INFO - Found BibTeX data source 'publications.bib'
-[888] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[889] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[889] Biber.pm:4221> INFO - Sorting list 'none/global//global/global' of type 'entry' with template 'none' and locale 'en-US'
-[889] Biber.pm:4227> INFO - No sort tailoring available for locale 'en-US'
-[905] bbl.pm:654> INFO - Writing 'CV.bbl' with encoding 'ascii'
-[906] bbl.pm:655> INFO - Converting UTF-8 to TeX macros on output to .bbl
-[917] bbl.pm:757> INFO - Output to CV.bbl
-[917] Biber.pm:130> WARN - legacy year field 'to appear in Nagoya Math. J.' in entry 'misc2' is not an integer - this will probably not sort properly.
-[917] Biber.pm:132> INFO - WARNINGS: 1
+[215] biber-MSWIN32:340> INFO - === 
+[308] Biber.pm:418> INFO - Reading 'CV.bcf'
+[421] Biber.pm:975> INFO - Using all citekeys in bib section 0
+[436] Biber.pm:4401> INFO - Processing section 0
+[462] Biber.pm:4592> INFO - Looking for bibtex file 'publications.bib' for section 0
+[523] bibtex.pm:1713> INFO - LaTeX decoding ...
+[539] bibtex.pm:1518> INFO - Found BibTeX data source 'publications.bib'
+[614] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[614] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[615] Biber.pm:4221> INFO - Sorting list 'none/global//global/global' of type 'entry' with template 'none' and locale 'en-US'
+[615] Biber.pm:4227> INFO - No sort tailoring available for locale 'en-US'
+[650] bbl.pm:654> INFO - Writing 'CV.bbl' with encoding 'ascii'
+[651] bbl.pm:655> INFO - Converting UTF-8 to TeX macros on output to .bbl
+[657] bbl.pm:757> INFO - Output to CV.bbl
+[658] Biber.pm:130> WARN - legacy year field 'arXiv:2402.06207' in entry 'misc4' is not an integer - this will probably not sort properly.
+[658] Biber.pm:130> WARN - legacy year field 'to appear in Nagoya Math. J.' in entry 'misc2' is not an integer - this will probably not sort properly.
+[658] Biber.pm:132> INFO - WARNINGS: 2
