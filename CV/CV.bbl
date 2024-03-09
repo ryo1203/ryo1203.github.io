@@ -42,8 +42,8 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{eprinttype}{arxiv}
+      \field{number}{arXiv:2402.06207}
       \field{title}{Prismatic Kunz's theorem}
-      \field{year}{arXiv:2402.06207}
       \true{nocite}
       \verb{eprint}
       \verb 2402.06207
@@ -113,7 +113,7 @@
       \field{eprinttype}{arxiv}
       \field{number}{arXiv:2305.07916}
       \field{title}{A calculation of the perfectoidization of semiperfectoid rings}
-      \field{year}{to appear in Nagoya Math. J.}
+      \field{year}{Nagoya Math. J. (2024)}
       \true{nocite}
       \verb{eprint}
       \verb 2305.07916
