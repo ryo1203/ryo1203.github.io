@@ -1,4 +1,4 @@
-This is e-upTeX, Version 3.141592653-p4.0.0-u1.28-220214-2.6 (utf8.uptex) (TeX Live 2022) (preloaded format=uplatex 2022.9.17)  21 JUL 2024 23:46
+This is e-upTeX, Version 3.141592653-p4.0.0-u1.28-220214-2.6 (utf8.uptex) (TeX Live 2022) (preloaded format=uplatex 2022.9.17)  11 AUG 2024 10:08
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1074,15 +1074,17 @@ LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 227.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
-(Font)              No change on input line 230.
-LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
-(Font)              No change on input line 239.
-LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <9> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 239.
-LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
-(Font)              No change on input line 240.
+(Font)              No change on input line 229.
+LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
+(Font)              No change on input line 232.
 LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
 (Font)              No change on input line 241.
+LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <9> not available
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 241.
+LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
+(Font)              No change on input line 242.
+LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
+(Font)              No change on input line 243.
  [2] (./CV.aux)
 Package rerunfilecheck Info: File `CV.out' has not changed.
 (rerunfilecheck)             Checksum: 34C7772CFB89B868DDFDBCC7C54B8A88;773.
@@ -1094,10 +1096,10 @@ Package logreq Info: Writing requests to 'CV.run.xml'.
 Here is how much of TeX's memory you used:
  29813 strings out of 475526
  573326 string characters out of 5794121
- 1367819 words of memory out of 5000000
+ 1366802 words of memory out of 5000000
  50932 multiletter control sequences out of 15000+600000
  525598 words of font info for 84 fonts, out of 8000000 for 9000
  929 hyphenation exceptions out of 8191
  129i,11n,122p,717b,1757s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on CV.dvi (2 pages, 58192 bytes).
+Output written on CV.dvi (2 pages, 58612 bytes).
