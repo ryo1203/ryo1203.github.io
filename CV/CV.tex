@@ -45,7 +45,7 @@
 
 % document language
 \usepackage[english]{babel}  % FIXME: using Spanish breaks moderncv
-
+\usepackage{footmisc}
 % biblatex
 % safeinputenc is needed
 \usepackage[backend=biber, sorting=none, maxbibnames=99, safeinputenc, url=false]{biblatex}
@@ -154,7 +154,8 @@
 \makecvtitle
 
 \section{Education}
-\cventry{Apr 2024--Current}{Doctor of Science in Mathematics}{Tokyo Institute of Technology}{Tokyo, Japan}{}{Supervisor: Kazuma Shimomoto}
+\cventry{Apr 2024--Current}{Doctor of Science in Mathematics}{Institute of Science Tokyo (formerly Tokyo Institute of Technology)\footnotemark}{Tokyo, Japan}{}{Supervisor: Kazuma Shimomoto}
+\footnotetext{In Oct 2024, Tokyo Institute of Technology was merged with Tokyo Medical and Dental University and reorganized into \emph{Institute of Science Tokyo}.}
 \cventry{Apr 2022--Mar 2024}{Master of Science in Mathematics}{Tokyo Institute of Technology}{Tokyo, Japan}{}{Supervisor: Kazuma Shimomoto (2nd year), Fumiharu Kato (1st year)}
 \cventry{Apr 2018--Mar 2022}{Bachelor of Science in Mathematics}{Tokyo Institute of Technology}{Tokyo, Japan}{}{Supervisor: Fumiharu Kato}
 %\cventry{year--year}{Degree}{Institution}{City}{\textit{Grade}}{Description} % arguments 3 to 6 can be left empty
