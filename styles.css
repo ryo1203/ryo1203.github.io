@@ -57,3 +57,41 @@ section {
 a {
     color: rgb(33, 33, 33);
 }
+
+.profile {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: nowrap; /* 画面サイズが小さくなっても折り返さない */
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+}
+
+.profile-photo {
+    max-width: 250px;
+    margin-left: 20px;
+    margin-top: -50px; /* ulの上にはみ出させない */
+}
+
+@media (max-width: 800px) {
+    .profile {
+        justify-content: space-between; /* 画面サイズが小さくなったときにスペースを均等に配置 */
+    }
+
+    .profile-photo {
+        margin-left: 10px; /* 画像とテキストの間にスペースを追加 */
+    }
+}
+
+figure {
+    margin: 0;
+    text-align: center;
+}
+
+figcaption {
+    font-size: 0.7em;
+    color: #555;
+    margin-top: 0px; /* 隙間を小さくする */
+}
