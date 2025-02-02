@@ -425,7 +425,7 @@
             // Bibitemの生成
             let bibitem = `\\bibitem[${label}]{${citationkey}}\n{${authors}}, ${title}`;
             if (!entryType) {
-                bibitem = 'Can Not Fined Entry';
+                bibitem = 'Cannot Fined Entry';
             }
             else if (entryType === 'book') {
                 if (seriesInfo) {
@@ -503,6 +503,8 @@
                 }
             } else if (citationkey === `stacks-project`) {
                 bibitem = `\\bibitem[Sta]{stacks-project}\n{\\au{The Stacks Project Authors}}, \\at{\\textit{Stacks Project}}. \\url{https://stacks.math.columbia.edu}`;
+            } else if (citationkey == `Macaulay2`) {
+                bibitem = `\\bibitem[Mac]{Macaulay2}\n{\\au{D. R. Grayson} and \\au{M. E. Stillman}}, \\at{\\textit{Macaulay2, a software system for research in algebraic geometry}}. Available at \\url{http://www2.macaulay2.com}`;
             } else if (eprinttypeInfo !== 'arxiv' && entryType === 'misc') {
                 if (yearInfo) {
                     bibitem += `, ${yearInfo}.`;
