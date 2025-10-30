@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>bbl translates to bibitem</title>
+    <title>bbl translator to bibitem</title>
     <link rel="stylesheet" type="text/css" href="../styles.css">
     <style>
         html,
@@ -117,11 +117,13 @@
     \end{thebibliography}
 </textarea>
         <div class="buttonContainer">
-            <button id="copyCopyTextButton">Copy the Enviroment</button>
+            <button id="copyCopyTextButton">Copy the Environment</button>
         </div>
 
         <div class="footer">
-            <p>Created by <a href="../index.html">Ryo ishizuka</a></p>
+            <p>Created by <a href="../index.html">Ryo Ishizuka</a></p>
+            <p id="bugStatus">Status: <strong>eprinttype (arXiv) detection bug</strong> — Fixed on 30 Oct 2025</p>
+            <p id="publishedDate">Published: 03 Dec 2023</p>
         </div>
     </div>
 
@@ -405,7 +407,11 @@
             // eprinttype情報の抽出
             const eprinttypeRegex = /\\field{eprinttype}{(.*?)}\n/;
             const eprinttypeMatch = eprinttypeRegex.exec(text);
-            const eprinttypeInfo = eprinttypeMatch ? `${eprinttypeMatch[1]}` : '';
+            // 正常に比較できるように中括弧や余分な空白を取り除き小文字化して正規化する
+            let eprinttypeInfo = eprinttypeMatch ? `${eprinttypeMatch[1]}` : '';
+            if (eprinttypeInfo) {
+                eprinttypeInfo = eprinttypeInfo.replace(/[{}]/g, '').trim().toLowerCase();
+            }
 
             // urlInfoからarxiv.orgのURLを抽出
             const arxivUrlRegex = /(https?:\/\/arxiv\.org\/[^\/]*\/(.*))/;
