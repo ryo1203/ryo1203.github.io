@@ -43,6 +43,7 @@
                     <label for="deadline-selector" class="block text-sm font-medium text-gray-400 mb-1">表示する締切</label>
                     <select id="deadline-selector" class="w-full p-2 border border-gray-600 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base bg-gray-700 text-gray-100">
                         <option value="next" selected>次の投稿締切</option>
+                        <option value="next_next">次の次の投稿締切</option>
                         <option value="previous">前回の投稿締切</option>
                     </select>
                 </div>
@@ -64,13 +65,14 @@
 
             <!-- カウントダウン (ダークモード) -->
             <div id="countdown-wrapper" class="mt-5 text-center">
-                <h2 class="text-sm font-medium text-gray-400">締切までの残り時間</h2>
+                <!-- ラベルにIDを追加 -->
+                <h2 id="countdown-label" class="text-sm font-medium text-gray-400">締切までの残り時間</h2>
                 <div id="countdown" class="text-2xl font-bold text-gray-100 mt-1">...</div>
             </div>
             
-            <!-- 過去の締切メッセージ (ダークモード) -->
-            <div id="previous-info" class="hidden mt-5 text-center text-sm text-gray-500">
-                過去の締切を表示しています。
+            <!-- 過去・未来の締切メッセージ (ダークモード) -->
+            <div id="info-message" class="hidden mt-5 text-center text-sm text-gray-500">
+                <!-- JSでメッセージを挿入 -->
             </div>
 
             <!-- フッター (ダークモード) -->
@@ -102,10 +104,10 @@
             // 初回実行
             updateTimes();
             
-            // 1分ごとに更新（ただし「次回」の時のみ）
+            // 1分ごとに更新（ただし「次回」「次の次回」の時のみ）
             setInterval(() => {
                 const mode = document.getElementById('deadline-selector').value;
-                if (mode === 'next') {
+                if (mode === 'next' || mode === 'next_next') {
                     updateTimes();
                 }
             }, 60000); 
@@ -200,7 +202,8 @@
             const outputAnnounce = document.getElementById('announce');
             const countdownEl = document.getElementById('countdown');
             const countdownWrapper = document.getElementById('countdown-wrapper');
-            const previousInfo = document.getElementById('previous-info');
+            const countdownLabel = document.getElementById('countdown-label'); // ラベルを取得
+            const infoMessageEl = document.getElementById('info-message');
             const errorEl = document.getElementById('error-display');
             const deadlineLabelPrefix = document.getElementById('deadline-label-prefix');
 
@@ -309,12 +312,16 @@
             const deadlineUTCHour = deadlineETHour - etOffsetHours;
             const announceUTCHour = announceETHour - etOffsetHours;
 
-            const mode = deadlineSelect.value; // "next" または "previous"
+            const mode = deadlineSelect.value; // "next", "next_next" または "previous"
             let deadlineDate, announceDate;
 
             // nowInET が有効な Date オブジェクトである場合のみ計算に進む
             if (nowInET instanceof Date && !isNaN(nowInET.getTime())) {
                 
+                infoMessageEl.classList.add('hidden'); // デフォルトで情報メッセージを隠す
+                countdownWrapper.classList.add('hidden'); // デフォルトでカウントダウンを隠す
+                countdownEl.classList.remove('text-red-500'); // 赤文字をリセット
+
                 if (mode === 'next') {
                     const dates = getNextDeadlineET(nowInET, deadlineUTCHour, announceUTCHour);
                     deadlineDate = dates.deadline;
@@ -322,14 +329,13 @@
                     
                     // UI更新
                     countdownWrapper.classList.remove('hidden');
-                    previousInfo.classList.add('hidden');
                     deadlineLabelPrefix.textContent = '📜 次の';
+                    countdownLabel.textContent = '次の締切までの残り時間'; // ラベル更新
 
                     // カウントダウン
                     const diffMs = deadlineDate.getTime() - now.getTime();
                     if (diffMs < 0) {
                         countdownEl.textContent = "締切処理中です...";
-                        countdownEl.classList.remove('text-red-500'); // ダークモード用に修正
                     } else {
                         const totalMinutes = Math.floor(diffMs / (1000 * 60));
                         const days = Math.floor(totalMinutes / (60 * 24));
@@ -345,8 +351,40 @@
                         // 10分前になったら赤くする
                         if (totalMinutes < 10) {
                             countdownEl.classList.add('text-red-500');
-                        } else {
-                            countdownEl.classList.remove('text-red-500');
+                        }
+                    }
+                
+                } else if (mode === 'next_next') {
+                    const dates = getNextNextDeadlineET(nowInET, deadlineUTCHour, announceUTCHour, etOffsetHours);
+                    deadlineDate = dates.deadline;
+                    announceDate = dates.announce;
+
+                    // UI更新
+                    deadlineLabelPrefix.textContent = '📜 次の次の';
+                    infoMessageEl.textContent = '次の次の締切を表示しています。';
+                    infoMessageEl.classList.remove('hidden');
+                    
+                    // カウントダウン表示
+                    countdownWrapper.classList.remove('hidden');
+                    countdownLabel.textContent = '次の次の締切までの残り時間'; // ラベル更新
+
+                    const diffMs = deadlineDate.getTime() - now.getTime();
+                    if (diffMs < 0) {
+                        countdownEl.textContent = "処理中です...";
+                    } else {
+                        const totalMinutes = Math.floor(diffMs / (1000 * 60));
+                        const days = Math.floor(totalMinutes / (60 * 24));
+                        const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+                        const minutes = totalMinutes % 60;
+                        
+                        let countdownStr = "";
+                        if (days > 0) countdownStr += `${days}日 `;
+                        if (hours > 0 || days > 0) countdownStr += `${hours}時間 `;
+                        countdownStr += `${minutes}分`;
+                        countdownEl.textContent = countdownStr;
+
+                        if (totalMinutes < 10) {
+                            countdownEl.classList.add('text-red-500');
                         }
                     }
 
@@ -356,10 +394,10 @@
                     announceDate = dates.announce;
 
                     // UI更新
-                    countdownWrapper.classList.add('hidden');
-                    previousInfo.classList.remove('hidden');
                     deadlineLabelPrefix.textContent = '📜 前回の';
-                    countdownEl.classList.remove('text-red-500');
+                    infoMessageEl.textContent = '過去の締切を表示しています。';
+                    infoMessageEl.classList.remove('hidden');
+                    // (カウントダウンは hidden のまま)
                 }
             
             } else {
@@ -477,6 +515,24 @@
             }
             
             return { deadline: deadlineDate, announce: announceDate };
+        }
+        
+        /**
+         * 次の次の締切を計算します
+         */
+        function getNextNextDeadlineET(nowInET_Date, deadlineUTCHour, announceUTCHour, etOffsetHours) {
+            // 1. まず「次の」締切を計算
+            const nextDates = getNextDeadlineET(nowInET_Date, deadlineUTCHour, announceUTCHour);
+            
+            // 2. 「次の」締切の瞬間の *直後* (1秒後) のET時刻を計算
+            //    (注: nextDates.deadline はUTC基準のDateオブジェクト)
+            //    締切の瞬間 (UTC) + 1秒後 を基準に、ETのDateオブジェクトを再計算
+            const nowInET_Plus1Sec = new Date(nextDates.deadline.getTime() + 1000 + (etOffsetHours * 3600 * 1000));
+            
+            // 3. 1秒後を基準に、再度「次の」締切を計算
+            const nextNextDates = getNextDeadlineET(nowInET_Plus1Sec, deadlineUTCHour, announceUTCHour);
+            
+            return nextNextDates;
         }
 
         /**
