@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<!-- ダークモードをデフォルトで有効にする -->
+<html lang="ja" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>arXiv 締切チェッカー</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Interフォントを読み込む（Tailwindのデフォルト） */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+    </style>
+</head>
+<!-- ダークモードの背景色と文字色 -->
+<body class="bg-gray-900 text-gray-200">
+
+    <div class="grid place-items-center min-h-screen p-4">
+        <!-- ダークモードのコンテナ色 -->
+        <div class="bg-gray-800 border border-gray-700 rounded-lg shadow-sm p-6 sm:p-8 w-full max-w-2xl">
+            
+            <h1 class="text-2xl font-bold text-red-500 mb-4 pb-2 border-b border-gray-700">
+                arXiv 締切チェッカー
+            </h1>
+
+            <!-- エラー表示エリア (ダークモード) -->
+            <div id="error-display" class="hidden bg-red-900 border border-red-700 text-red-200 rounded-md p-3 text-sm mb-4">
+                エラー: 内部時刻の計算に失敗しました。ブラウザのコンソールを確認してください。
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                <!-- タイムゾーン選択 (ダークモード) -->
+                <div>
+                    <label for="timezone-select" class="block text-sm font-medium text-gray-400 mb-1">タイムゾーン</label>
+                    <select id="timezone-select" class="w-full p-2 border border-gray-600 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base bg-gray-700 text-gray-100">
+                        <!-- JavaScriptで動的に生成 -->
+                    </select>
+                </div>
+                <!-- 締切選択 (ダークモード) -->
+                <div>
+                    <label for="deadline-selector" class="block text-sm font-medium text-gray-400 mb-1">表示する締切</label>
+                    <select id="deadline-selector" class="w-full p-2 border border-gray-600 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-base bg-gray-700 text-gray-100">
+                        <option value="next" selected>次の投稿締切</option>
+                        <option value="previous">前回の投稿締切</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 締切・公開カード (ダークモード) -->
+            <div class="grid sm:grid-cols-2 gap-4">
+                <div class="bg-gray-850 border border-gray-700 rounded-lg p-4" style="background-color: #1f2937;"> <!-- 'bg-gray-850' (カスタム) -->
+                    <h2 class="text-sm font-medium text-gray-400 mb-1">
+                        <span id="deadline-label-prefix">📜 次の</span>投稿締切
+                    </h2>
+                    <p id="deadline" class="text-lg font-semibold text-gray-100">計算中...</p>
+                </div>
+                <div class="bg-gray-850 border border-gray-700 rounded-lg p-4" style="background-color: #1f2937;">
+                    <h2 class="text-sm font-medium text-gray-400 mb-1">📢 対応する公開日時</h2>
+                    <p id="announce" class="text-lg font-semibold text-gray-100">計算中...</p>
+                </div>
+            </div>
+
+            <!-- カウントダウン (ダークモード) -->
+            <div id="countdown-wrapper" class="mt-5 text-center">
+                <h2 class="text-sm font-medium text-gray-400">締切までの残り時間</h2>
+                <div id="countdown" class="text-2xl font-bold text-gray-100 mt-1">...</div>
+            </div>
+            
+            <!-- 過去の締切メッセージ (ダークモード) -->
+            <div id="previous-info" class="hidden mt-5 text-center text-sm text-gray-500">
+                過去の締切を表示しています。
+            </div>
+
+            <!-- フッター (ダークモード) -->
+            <footer class="mt-6 pt-4 border-t border-gray-700 text-sm text-gray-500 text-center">
+                <p class="font-medium text-gray-400 mb-2">公式情報 (arXiv.org)</p>
+                <div class="flex justify-center gap-4">
+                    <a href="https://arxiv.org/localtime" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">
+                        arXiv Local Time
+                    </a>
+                    <a href="https://info.arxiv.org/help/availability.html" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">
+                        Submission Schedule
+                    </a>
+                </div>
+                <p class="mt-3 text-xs">
+                    ※ 祝日 (Holiday) によりスケジュールが変更される場合があります。
+                </p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            populateTimezoneSelector();
+            
+            // イベントリスナー
+            document.getElementById('timezone-select').addEventListener('change', updateTimes);
+            document.getElementById('deadline-selector').addEventListener('change', updateTimes);
+
+            // 初回実行
+            updateTimes();
+            
+            // 1分ごとに更新（ただし「次回」の時のみ）
+            setInterval(() => {
+                const mode = document.getElementById('deadline-selector').value;
+                if (mode === 'next') {
+                    updateTimes();
+                }
+            }, 60000); 
+        });
+
+        /**
+         * タイムゾーンセレクターに必要なオプションを動的に追加します。
+         */
+        function populateTimezoneSelector() {
+            const select = document.getElementById('timezone-select');
+            let userTz;
+            try {
+                userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            } catch (e) {
+                userTz = 'UTC'; // フォールバック
+            }
+
+            // 表示するタイムゾーンのリストとマッピング
+            const tzMap = {
+                [userTz]: { name: `あなたのタイムゾーン (${getTzAbbreviation(userTz)})`, order: 1 },
+                'Asia/Tokyo': { name: '日本 (JST)', order: 2 },
+                'America/New_York': { name: '米国東部 (ET)', order: 3 },
+                'America/Los_Angeles': { name: '米国太平洋 (PT)', order: 4 },
+                'Europe/London': { name: 'イギリス (GMT/BST)', order: 5 },
+                'Europe/Berlin': { name: '中央ヨーロッパ (CET/CEST)', order: 6 },
+                'Europe/Paris': { name: '中央ヨーロッパ (CET/CEST)', order: 6 },
+                'UTC': { name: '協定世界時 (UTC)', order: 7 },
+                'Asia/Shanghai': { name: '中国 (CST)', order: 8 },
+                'Australia/Sydney': { name: 'オーストラリア東部 (AEST/AEDT)', order: 9 }
+            };
+
+            // 重複を削除し、orderでソート
+            const sortedTz = Object.keys(tzMap)
+                .map(key => ({ id: key, ...tzMap[key] }))
+                .sort((a, b) => a.order - b.order);
+
+            // 重複する名前を削除（例：BerlinとParis）
+            const uniqueTz = [];
+            const namesSeen = new Set();
+            for (const tz of sortedTz) {
+                if (!namesSeen.has(tz.name)) {
+                    uniqueTz.push(tz);
+                    namesSeen.add(tz.name);
+                }
+            }
+
+            // <option> を追加
+            uniqueTz.forEach(tz => {
+                const option = document.createElement('option');
+                option.value = tz.id;
+                option.textContent = tz.name;
+                // 'あなたのタイムゾーン' をデフォルトで選択
+                if (tz.id === userTz) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            });
+        }
+
+        /**
+         * タイムゾーンIDから現在の略称を取得するヘルパー
+         */
+        function getTzAbbreviation(timeZone) {
+            try {
+                const options = { timeZone, timeZoneName: 'short' };
+                const str = new Intl.DateTimeFormat('en-US', options).format(new Date());
+                // "11/4/2025, JST" のような文字列から "JST" を抽出
+                const parts = str.split(', ');
+                if (parts.length > 1) {
+                    // "JST" や "GMT+9" などを返す
+                    const tzName = parts[parts.length - 1];
+                    // "GMT+9" のような形式を "+9" に
+                    if (tzName.startsWith('GMT')) {
+                        return tzName.substring(3);
+                    }
+                    return tzName;
+                }
+                // "GMT-4" のような shortOffset の場合
+                const offsetStr = new Intl.DateTimeFormat('en-US', { timeZone, timeZoneName: 'shortOffset' }).format(new Date());
+                return offsetStr.replace('GMT', ''); // "GMT-4" -> "-4"
+            } catch (e) {
+                return timeZone; // エラー時はIDをそのまま返す
+            }
+        }
+
+
+        /**
+         * メインの更新関数
+         */
+        function updateTimes() {
+            const outputDeadline = document.getElementById('deadline');
+            const outputAnnounce = document.getElementById('announce');
+            const countdownEl = document.getElementById('countdown');
+            const countdownWrapper = document.getElementById('countdown-wrapper');
+            const previousInfo = document.getElementById('previous-info');
+            const errorEl = document.getElementById('error-display');
+            const deadlineLabelPrefix = document.getElementById('deadline-label-prefix');
+
+            const deadlineSelect = document.getElementById('deadline-selector');
+            const timezoneSelect = document.getElementById('timezone-select');
+
+            let etOffsetHours = NaN; // ETのUTCオフセット (-4 または -5)
+            const ET_TIMEZONE = 'America/New_York';
+
+            // --- 1. PCの時計をチェック ---
+            const now = new Date();
+            if (isNaN(now.getTime())) {
+                console.error('CRITICAL: System clock is invalid (new Date() is NaN).');
+                errorEl.textContent = 'エラー: お使いのPCの時計が不正です。';
+                errorEl.classList.remove('hidden');
+                outputDeadline.textContent = 'エラー';
+                outputAnnounce.textContent = 'エラー';
+                return;
+            }
+
+            // --- 2. ETの時差を安全に計算 (Plan A, B, C) ---
+            try {
+                // Plan A: shortOffset (例: "GMT-4")
+                let offsetStr = new Intl.DateTimeFormat('en-US', {
+                    timeZone: ET_TIMEZONE,
+                    timeZoneName: 'shortOffset'
+                }).format(now); 
+
+                if (offsetStr.startsWith('GMT')) {
+                    const offset = parseInt(offsetStr.replace('GMT', ''), 10);
+                    if (!isNaN(offset)) {
+                        etOffsetHours = offset;
+                    }
+                }
+                
+                // Plan B: longOffset (例: "GMT-04:00")
+                if (isNaN(etOffsetHours)) {
+                    offsetStr = new Intl.DateTimeFormat('en-US', {
+                        timeZone: ET_TIMEZONE,
+                        timeZoneName: 'longOffset'
+                    }).format(now);
+                    
+                    if (offsetStr.startsWith('GMT')) {
+                        const parts = offsetStr.replace('GMT', '').split(':');
+                        const offset = parseInt(parts[0], 10);
+                         if (!isNaN(offset)) {
+                            etOffsetHours = offset;
+                        }
+                    }
+                }
+
+                // Plan C: 手動計算 (formatToParts)
+                if (isNaN(etOffsetHours)) {
+                    const utcFormatter = new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', hour12: false, year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' });
+                    const etFormatter = new Intl.DateTimeFormat('en-US', { timeZone: ET_TIMEZONE, hour12: false, year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' });
+                    
+                    const utcParts = utcFormatter.formatToParts(now).reduce((acc, part) => { acc[part.type] = part.value; return acc; }, {});
+                    const etParts = etFormatter.formatToParts(now).reduce((acc, part) => { acc[part.type] = part.value; return acc; }, {});
+
+                    const utcDate = Date.UTC(
+                        parseInt(utcParts.year, 10),
+                        parseInt(utcParts.month, 10) - 1,
+                        parseInt(utcParts.day, 10),
+                        (parseInt(utcParts.hour, 10) || 0) % 24, // 24時を0時に
+                        (parseInt(utcParts.minute, 10) || 0)
+                    );
+                    
+                    const etDate = Date.UTC(
+                        parseInt(etParts.year, 10),
+                        parseInt(etParts.month, 10) - 1,
+                        parseInt(etParts.day, 10),
+                        (parseInt(etParts.hour, 10) || 0) % 24, // 24時を0時に
+                        (parseInt(etParts.minute, 10) || 0)
+                    );
+
+                    if (!isNaN(utcDate) && !isNaN(etDate)) {
+                        etOffsetHours = (etDate - utcDate) / (1000 * 60 * 60);
+                    }
+                }
+
+            } catch (e) {
+                console.error('ET Offset calculation failed:', e);
+                // エラー処理は try/catch の外で行う
+            }
+
+            // --- 3. 時差計算が失敗したら処理を停止 ---
+            if (isNaN(etOffsetHours)) {
+                console.error('CRITICAL: Could not determine ET offset (etOffsetHours is NaN).');
+                errorEl.textContent = 'エラー: ET（米国東部）の時差を計算できませんでした。';
+                errorEl.classList.remove('hidden');
+                outputDeadline.textContent = 'エラー';
+                outputAnnounce.textContent = 'エラー';
+                countdownWrapper.classList.add('hidden');
+                return;
+            }
+
+            // --- 4. 締切計算 ---
+            // エラーメッセージを隠す
+            errorEl.classList.add('hidden');
+
+            const nowInET = new Date(now.getTime() + (etOffsetHours * 3600 * 1000));
+            
+            const deadlineETHour = 14; // 14:00 ET
+            const announceETHour = 20; // 20:00 ET
+
+            const deadlineUTCHour = deadlineETHour - etOffsetHours;
+            const announceUTCHour = announceETHour - etOffsetHours;
+
+            const mode = deadlineSelect.value; // "next" または "previous"
+            let deadlineDate, announceDate;
+
+            // nowInET が有効な Date オブジェクトである場合のみ計算に進む
+            if (nowInET instanceof Date && !isNaN(nowInET.getTime())) {
+                
+                if (mode === 'next') {
+                    const dates = getNextDeadlineET(nowInET, deadlineUTCHour, announceUTCHour);
+                    deadlineDate = dates.deadline;
+                    announceDate = dates.announce;
+                    
+                    // UI更新
+                    countdownWrapper.classList.remove('hidden');
+                    previousInfo.classList.add('hidden');
+                    deadlineLabelPrefix.textContent = '📜 次の';
+
+                    // カウントダウン
+                    const diffMs = deadlineDate.getTime() - now.getTime();
+                    if (diffMs < 0) {
+                        countdownEl.textContent = "締切処理中です...";
+                        countdownEl.classList.remove('text-red-500'); // ダークモード用に修正
+                    } else {
+                        const totalMinutes = Math.floor(diffMs / (1000 * 60));
+                        const days = Math.floor(totalMinutes / (60 * 24));
+                        const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+                        const minutes = totalMinutes % 60;
+                        
+                        let countdownStr = "";
+                        if (days > 0) countdownStr += `${days}日 `;
+                        if (hours > 0 || days > 0) countdownStr += `${hours}時間 `;
+                        countdownStr += `${minutes}分`;
+                        countdownEl.textContent = countdownStr;
+
+                        // 10分前になったら赤くする
+                        if (totalMinutes < 10) {
+                            countdownEl.classList.add('text-red-500');
+                        } else {
+                            countdownEl.classList.remove('text-red-500');
+                        }
+                    }
+
+                } else { // mode === 'previous'
+                    const dates = getPreviousDeadlineET(nowInET, deadlineUTCHour, announceUTCHour);
+                    deadlineDate = dates.deadline;
+                    announceDate = dates.announce;
+
+                    // UI更新
+                    countdownWrapper.classList.add('hidden');
+                    previousInfo.classList.remove('hidden');
+                    deadlineLabelPrefix.textContent = '📜 前回の';
+                    countdownEl.classList.remove('text-red-500');
+                }
+            
+            } else {
+                // nowInET が Invalid Date だった場合のフォールバック (TypeError 対策)
+                console.error('CRITICAL: nowInET is an invalid Date before calling deadline function. Aborting.');
+                errorEl.textContent = 'エラー: 内部時刻の計算に失敗しました (Invalid Date)。';
+                errorEl.classList.remove('hidden');
+                outputDeadline.textContent = 'エラー';
+                outputAnnounce.textContent = 'エラー';
+                countdownWrapper.classList.add('hidden');
+                return; // 処理を停止
+            }
+
+
+            // --- 5. 表示フォーマットを決定 ---
+            const selectedTzValue = timezoneSelect.value;
+            const userTzId = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            
+            let locale = 'en-US'; // デフォルトは英語
+            
+            // 日本語で表示する条件:
+            // 1. セレクターで "Asia/Tokyo" が選択された
+            // 2. セレクターで "あなたのタイムゾーン" が選択され、かつブラウザのタイムゾーンが "Asia/Tokyo"
+            if (selectedTzValue === 'Asia/Tokyo' || (selectedTzValue === userTzId && userTzId === 'Asia/Tokyo')) {
+                locale = 'ja-JP';
+            }
+
+            const formatter = new Intl.DateTimeFormat(locale, {
+                timeZone: selectedTzValue,
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                weekday: 'long',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZoneName: 'short',
+            });
+
+            outputDeadline.textContent = formatter.format(deadlineDate);
+            outputAnnounce.textContent = formatter.format(announceDate);
+        }
+
+        /**
+         * 次の締切 (未来) を計算します
+         */
+        function getNextDeadlineET(nowInET_Date, deadlineUTCHour, announceUTCHour) {
+            // nowInET_Date は Dateオブジェクト (UTC時刻基準)
+            const etDay = nowInET_Date.getUTCDay();   // 0=Sun, 1=Mon, ..., 6=Sat
+            const etHour = nowInET_Date.getUTCHours(); // 0-23
+
+            let deadlineDate = new Date(nowInET_Date.getTime());
+            deadlineDate.setUTCHours(deadlineUTCHour, 0, 0, 0);
+
+            let announceDate = new Date(nowInET_Date.getTime());
+            announceDate.setUTCHours(announceUTCHour, 0, 0, 0);
+
+            // arXivのスケジュールロジック
+            if (etDay === 0) { // Sunday
+                if (etHour >= 14) {
+                    addDaysUTC(deadlineDate, 1); // Mon
+                    addDaysUTC(announceDate, 1);
+                }
+            } else if (etDay >= 1 && etDay <= 3) { // Mon, Tue, Wed
+                if (etHour >= 14) {
+                    addDaysUTC(deadlineDate, 1); // Next day
+                    addDaysUTC(announceDate, 1);
+                }
+            } else if (etDay === 4) { // Thursday
+                if (etHour >= 14) {
+                    addDaysUTC(deadlineDate, 3); // Sun
+                    addDaysUTC(announceDate, 3);
+                }
+            } else if (etDay === 5) { // Friday
+                addDaysUTC(deadlineDate, 2); // Sun
+                addDaysUTC(announceDate, 2);
+            } else if (etDay === 6) { // Saturday
+                addDaysUTC(deadlineDate, 1); // Sun
+                addDaysUTC(announceDate, 1);
+            }
+            
+            return { deadline: deadlineDate, announce: announceDate };
+        }
+
+        /**
+         * 前回の締切 (過去) を計算します
+         */
+        function getPreviousDeadlineET(nowInET_Date, deadlineUTCHour, announceUTCHour) {
+            // nowInET_Date は Dateオブジェクト (UTC時刻基準)
+            const etDay = nowInET_Date.getUTCDay();   // 0=Sun, 1=Mon, ..., 6=Sat
+            const etHour = nowInET_Date.getUTCHours(); // 0-23
+
+            let deadlineDate = new Date(nowInET_Date.getTime());
+            deadlineDate.setUTCHours(deadlineUTCHour, 0, 0, 0);
+
+            let announceDate = new Date(nowInET_Date.getTime());
+            announceDate.setUTCHours(announceUTCHour, 0, 0, 0);
+
+            // arXivのスケジュールロジック (逆算)
+            if (etDay === 0) { // Sunday
+                if (etHour < 14) {
+                    addDaysUTC(deadlineDate, -3); // Thu
+                    addDaysUTC(announceDate, -3);
+                }
+            } else if (etDay >= 1 && etDay <= 4) { // Mon, Tue, Wed, Thu
+                if (etHour < 14) {
+                    addDaysUTC(deadlineDate, -1); // Previous day
+                    addDaysUTC(announceDate, -1);
+                }
+            } else if (etDay === 5) { // Friday
+                addDaysUTC(deadlineDate, -1); // Thu
+                addDaysUTC(announceDate, -1);
+            } else if (etDay === 6) { // Saturday
+                addDaysUTC(deadlineDate, -2); // Thu
+                addDaysUTC(announceDate, -2);
+            }
+            
+            return { deadline: deadlineDate, announce: announceDate };
+        }
+
+        /**
+         * Dateオブジェクト (UTC基準) に日数を加算するヘルパー
+         */
+        function addDaysUTC(date, days) {
+            date.setUTCDate(date.getUTCDate() + days);
+        }
+
+    </script>
+</body>
+</html>
+

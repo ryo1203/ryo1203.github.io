@@ -1,2 +1,2 @@
 User-agent: *
-Disallow: /pdf/AndreAbhyankar.pdf
+Disallow: notes.html
