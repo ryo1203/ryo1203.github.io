@@ -6,6 +6,18 @@
 % available at http://www.latex-project.org/lppl/.
 
 
+% Ensure proper driver and Unicode options for hyperref before the class loads it
+% - For pLaTeX+dvipdfmx, explicitly set dvipdfmx and enable Unicode
+% - For pdfLaTeX/XeLaTeX/LuaLaTeX, Unicode is enough; hide link borders
+\RequirePackage{iftex}
+\RequirePackage{ifptex}
+\ifpTeX
+  \PassOptionsToPackage{dvipdfmx,unicode}{hyperref}
+\else
+  \PassOptionsToPackage{unicode}{hyperref}
+\fi
+\PassOptionsToPackage{hidelinks}{hyperref}
+
 \documentclass[10pt,a4paper,sans]{moderncv} 
 % possible options include font size ('10pt', '11pt' and '12pt'), paper size ('a4paper', 'letterpaper', 'a5paper', 'legalpaper', 'executivepaper' and 'landscape') and font family ('sans' and 'roman')
 
@@ -28,8 +40,7 @@
 % font loading
 % for luatex and xetex, do not use inputenc and fontenc
 % See https://tex.stackexchange.com/a/496643
-\ifxetexorluatex
-  \usepackage{luatexja-preset}
+\ifXeTeX
   \usepackage{fontspec}
   \usepackage{unicode-math}
   \defaultfontfeatures{Ligatures=TeX}
@@ -38,9 +49,22 @@
   \setmonofont{Latin Modern Mono}
   \setmathfont{Latin Modern Math} 
 \else
-  \usepackage[utf8]{inputenc}
-  \usepackage[T1]{fontenc}
-  \usepackage{lmodern}
+  \ifLuaTeX
+    \usepackage{luatexja-preset}
+    \usepackage{fontspec}
+    \usepackage{unicode-math}
+    \defaultfontfeatures{Ligatures=TeX}
+    \setmainfont{Latin Modern Roman}
+    \setsansfont{Latin Modern Sans}
+    \setmonofont{Latin Modern Mono}
+    \setmathfont{Latin Modern Math} 
+  \else
+    \usepackage[utf8]{inputenc}
+    \usepackage[T1]{fontenc}
+    \usepackage{lmodern}
+
+  \fi
+\fi
 
 
 % document language
@@ -60,6 +84,20 @@
 % load after babel and biblatex
 % biblatex recommends loading csquotes with babel
 \usepackage{csquotes}
+
+% Ensure hyperref is loaded before using pxjahyper or hypersetup
+\makeatletter
+\@ifpackageloaded{hyperref}{}{\RequirePackage{hyperref}}
+\makeatother
+
+% Improve hyperlink handling with Japanese (pLaTeX+dvipdfmx)
+\ifpTeX
+  % pxjahyper must be loaded after hyperref; moderncv class loads hyperref
+  \usepackage{pxjahyper}
+\fi
+
+% Allow clickable links to break across lines (useful for long URLs)
+\hypersetup{breaklinks=true}
 \usepackage{enumerate, etaremune, totcount}
 \newtotcounter{talks}
 
@@ -76,7 +114,7 @@
 
 % \born{3 December 1999}    % {day month year} optional, remove / comment the line if not wanted
 
-\address{Tokyo Institute of Technology}{2-12-1 Ookayama 152-8551 Meguro-ku Tokyo}{Japan}
+\address{Institute of Science Tokyo}{2-12-1 Ookayama 152-8551 Meguro-ku Tokyo}{Japan}
 \renewcommand*{\addressfont}{\large\mdseries\upshape}
 % \address{2-12-1 Ookayama}{152-8551 Meguro-ku Tokyo}{Japan}
 % {street and number}{postcode city}{country}
@@ -182,6 +220,8 @@ mathematics).
 % \printbibliography[title={Papers and Preprints}]
 \section{Papers and Preprints}
 \begin{enumerate}
+  \item[8.] \textbf{R. Ishizuka} and S. Yoshikawa, ``\emph{Graded perfectoid rings}'', \href{https://arxiv.org/abs/2511.02322}{arXiv:2511.02322}, 2025.
+
   \item[7.] \textbf{R. Ishizuka} and K. Shimomoto,  ``\emph{Quasi-canonical lifting of projective varieties in positive characteristic}'', \href{https://arxiv.org/abs/2506.01345}{arXiv:2506.01345}, 2025.
 
   \item[6.] \textbf{R. Ishizuka}, ``\emph{A higher algebraic approach to liftings of modules over derived quotients}'', \href{https://arxiv.org/abs/2503.17964}{arXiv:2503.17964}, 2025.
