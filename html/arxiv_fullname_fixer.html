@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArXiv Fullname Search Fixer</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #b31b1b; /* arXiv red-ish */
+            --text-color: #333;
+            --bg-color: #fff;
+            --secondary-text: #666;
+            --border-color: #eee;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: var(--secondary-text);
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: #1a252f;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.9em;
+        }
+
+        .en-text {
+            margin-bottom: 0.5rem;
+        }
+
+        .jp-text {
+            color: var(--secondary-text);
+            font-size: 0.95em;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-item {
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-title {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 80px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+        }
+
+        .gemini-disclaimer {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>ArXiv Fullname Search Fixer</h1>
+        <p>
+            Fixes arXiv author links to search by full name instead of initials.<br>
+            arXivの著者リンクをイニシャルではなくフルネーム検索に変更するChrome拡張機能。
+        </p>
+        <a href="https://github.com/ryo1203/arxiv-fullname-fixer" class="btn" target="_blank" rel="noopener noreferrer">View on GitHub / Download</a>
+    </header>
+
+    <section>
+        <h2>Problem & Solution (課題と解決)</h2>
+        
+        <h3>Problem</h3>
+        <div class="en-text">
+            On arXiv, clicking an author's name searches for <code>Surname, Initial</code> (e.g., <code>Doe, J</code>). This often brings up unrelated authors.
+        </div>
+        <div class="jp-text">
+            arXivでは、著者名をクリックすると「姓, イニシャル」で検索されてしまい、同姓同名の別人が混ざることがよくあります。
+        </div>
+
+        <h3>Solution</h3>
+        <div class="en-text">
+            This extension automatically rewrites the link to search for the <strong>Full Name</strong> displayed on the page (e.g., <code>"John Doe"</code>), ensuring accurate search results.
+        </div>
+        <div class="jp-text">
+            この拡張機能は、画面に表示されている<strong>フルネーム</strong>で検索するようにリンクを自動的に書き換えます。
+        </div>
+    </section>
+
+    <section>
+        <h2>Features (特徴)</h2>
+        <ul>
+            <li>
+                <strong>Smart Search</strong>: Searches by full name (e.g., "John Doe") instead of initials.<br>
+                <span class="jp-text">イニシャルではなくフルネーム（例："John Doe"）で検索します。</span>
+            </li>
+            <li>
+                <strong>Lightweight</strong>: Zero impact on page load time.<br>
+                <span class="jp-text">マウスオーバーやクリック時のみ動作するためページ読み込み速度に影響を与えません。</span>
+            </li>
+            <li>
+                <strong>Universal</strong>: Works on paper details, lists, and search results.<br>
+                <span class="jp-text">論文詳細、リスト、検索結果など全ページで動作します。</span>
+            </li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Installation (インストール方法)</h2>
+        <p>
+            Since this is not in the Chrome Web Store, please install it manually:<br>
+            Chromeウェブストア未公開のため、手動でインストールしてください：
+        </p>
+        <ol>
+            <li>
+                <strong>Download</strong>: Download the source code from GitHub.<br>
+                <span class="jp-text">（GitHubからソースコードをダウンロード・解凍します）</span>
+            </li>
+            <li>
+                <strong>Open Extensions</strong>: Go to <code>chrome://extensions</code> in Chrome.<br>
+                <span class="jp-text">（Chromeで <code>chrome://extensions</code> を開きます）</span>
+            </li>
+            <li>
+                <strong>Developer Mode</strong>: Turn on <strong>"Developer mode"</strong> (top right).<br>
+                <span class="jp-text">（右上の「デベロッパーモード」をオンにします）</span>
+            </li>
+            <li>
+                <strong>Load</strong>: Click <strong>"Load unpacked"</strong> and select the folder.<br>
+                <span class="jp-text">（「パッケージ化されていない拡張機能を読み込む」をクリックし、フォルダを選択します）</span>
+            </li>
+        </ol>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 <a href="index.html">Ryo Ishizuka</a></p>
+        <p class="gemini-disclaimer">
+            Code and documentation generated with the assistance of Gemini.<br>
+            (コードとドキュメントはGeminiの支援により作成されました)
+        </p>
+    </footer>
+</div>
+
+</body>
+</html>
