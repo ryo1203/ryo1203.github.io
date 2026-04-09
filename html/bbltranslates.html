@@ -502,6 +502,22 @@
             return parts.length ? parts[parts.length - 1] : '';
         }
 
+        function extractFamilyNames(rawAuthor) {
+            return splitBibAuthorList(rawAuthor || '')
+                .map(author => {
+                    const cleaned = normalizeFieldValue(author);
+                    if (!cleaned) {
+                        return '';
+                    }
+                    if (cleaned.includes(',')) {
+                        return (cleaned.split(',')[0] || '').trim();
+                    }
+                    const parts = cleaned.split(/\s+/).filter(Boolean);
+                    return parts.length ? parts[parts.length - 1] : '';
+                })
+                .filter(Boolean);
+        }
+
         function toAsciiLetters(input) {
             return (input || '')
                 .normalize('NFD')
@@ -510,36 +526,76 @@
         }
 
         function buildBibLabelBase(entry) {
-            const familySeed = toAsciiLetters(entry.primaryFamily || '');
-            const keySeed = toAsciiLetters(entry.citationkey || '');
-            const alphaSeed = familySeed || keySeed || 'Ref';
-            const alphaRaw = alphaSeed.slice(0, 3) || 'Ref';
-            const alpha = `${alphaRaw.charAt(0).toUpperCase()}${alphaRaw.slice(1).toLowerCase()}`;
+            const familyNames = entry.familyNames || [];
+            let alpha = 'Ref';
+
+            if (familyNames.length === 1) {
+                const familySeed = toAsciiLetters(familyNames[0]);
+                const alphaRaw = familySeed.slice(0, 3) || 'Ref';
+                alpha = `${alphaRaw.charAt(0).toUpperCase()}${alphaRaw.slice(1).toLowerCase()}`;
+            } else if (familyNames.length === 2) {
+                alpha = familyNames
+                    .map(name => (toAsciiLetters(name).charAt(0) || 'R').toUpperCase())
+                    .join('');
+            } else if (familyNames.length === 3) {
+                alpha = familyNames
+                    .map(name => (toAsciiLetters(name).charAt(0) || 'R').toUpperCase())
+                    .join('');
+            } else if (familyNames.length >= 4) {
+                const familySeed = toAsciiLetters(familyNames[0]);
+                const alphaRaw = familySeed.slice(0, 3) || 'Ref';
+                alpha = `${alphaRaw.charAt(0).toUpperCase()}${alphaRaw.slice(1).toLowerCase()}+`;
+            } else {
+                const keySeed = toAsciiLetters(entry.citationkey || '');
+                const alphaRaw = keySeed.slice(0, 3) || 'Ref';
+                alpha = `${alphaRaw.charAt(0).toUpperCase()}${alphaRaw.slice(1).toLowerCase()}`;
+            }
 
             const yearMatch = /\d{4}/.exec(entry.year || '');
             const yearSuffix = yearMatch ? yearMatch[0].slice(-2) : '';
             return `${alpha}${yearSuffix}`;
         }
 
+        function normalizeTitleForSort(title) {
+            return normalizeFieldValue(title || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase();
+        }
+
         function withGeneratedBibLabels(entries) {
-            const labelCounts = {};
-            return entries.map((entry) => {
+            const groupedEntries = new Map();
+
+            for (const entry of entries) {
                 const base = buildBibLabelBase(entry);
-                const index = labelCounts[base] || 0;
-                labelCounts[base] = index + 1;
-
-                let suffix = '';
-                if (index > 0 && index <= 26) {
-                    suffix = String.fromCharCode(96 + index);
-                } else if (index > 26) {
-                    suffix = `${index}`;
+                if (!groupedEntries.has(base)) {
+                    groupedEntries.set(base, []);
                 }
+                groupedEntries.get(base).push(entry);
+            }
 
-                return {
-                    ...entry,
-                    label: `${base}${suffix}`
-                };
-            });
+            const labelByKey = new Map();
+            for (const [base, grouped] of groupedEntries.entries()) {
+                const sortedGroup = grouped
+                    .slice()
+                    .sort((left, right) => {
+                        const titleComparison = normalizeTitleForSort(left.title).localeCompare(normalizeTitleForSort(right.title));
+                        if (titleComparison !== 0) {
+                            return titleComparison;
+                        }
+                        return (left.citationkey || '').localeCompare(right.citationkey || '');
+                    });
+
+                sortedGroup.forEach((entry, index) => {
+                    const suffix = sortedGroup.length > 1 ? String.fromCharCode(97 + index) : '';
+                    labelByKey.set(entry.citationkey, `${base}${suffix}`);
+                });
+            }
+
+            return entries.map((entry) => ({
+                ...entry,
+                label: labelByKey.get(entry.citationkey) || entry.label
+            }));
         }
 
         function parseBibEntries(text) {
@@ -597,12 +653,14 @@
                 const fields = parseBibFields(body);
                 const authors = splitBibAuthorList(fields.author || '').map(formatAuthorFromBib).filter(Boolean);
                 const primaryFamily = extractPrimaryFamilyName(fields.author || '');
+                const familyNames = extractFamilyNames(fields.author || '');
 
                 entries.push({
                     entryType,
                     citationkey: key,
                     label: key || 'Label',
                     primaryFamily,
+                    familyNames,
                     authors,
                     title: normalizeFieldValue(fields.title || ''),
                     journal: normalizeFieldValue(fields.journal || fields.journaltitle || ''),
