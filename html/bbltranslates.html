@@ -70,28 +70,29 @@
         <p>
             <!-- 説明 -->
             <b>How to use:</b> <br>
-            This is a tool to convert a bbl file made from biblatex to a bibitem file. <br>
-            Copy and paste the bbl file from the first \entry to the last \endentry into the input area and click the
-            "Translate" button. <br>
+            This is a tool to convert a bbl file made from biblatex or a .bib file into a bibitem file. <br>
+            Paste .bbl or .bib content into the input area and click the
+            "Translate" button. The input format is detected automatically. <br>
             The converted bibitem file will be displayed in the output area. <br>
             Paste the copied text into the bibliography environment at the bottom of this page. <br>
             Compile the tex file and check the result. <br>
             <!-- 注意事項 -->
             <b>Notes:</b> <br>
             ・This tool is not perfect. <br>
-            ・This tool is only tested in the author's environment (biblatex bbl format version 3.2). <br>
+            ・This tool is tested with biblatex bbl format version 3.2 and BibTeX-like .bib entries. <br>
             ・This script is forcibly running in JavaScript for demonstration purposes only. <br>
             ・No data transmission is being performed. <br>
             ・No reported bugs will be addressed.
             <br>
         </p>
-        <textarea id="inputText" rows="4" cols="50" placeholder="Paste your bbl file"></textarea>
+        <textarea id="inputText" rows="4" cols="50" placeholder="Paste your bbl or .bib content"></textarea>
         <div class="buttonContainer">
             <button onclick="pasteFromClipboard()">Paste from Clipboard</button>
             <button onclick="getText()">Translate</button>
             <button onclick="refreshText()">Refresh</button>
             <button id="copyInputButton">Copy Input</button>
         </div>
+        <p id="detectedFormat">Detected format: (not translated yet)</p>
         <textarea id="displayText" rows="4" cols="50" readonly></textarea>
         <div class="buttonContainer">
             <button id="copyButton">Copy Output</button>
@@ -123,32 +124,52 @@
         <div class="footer">
             <p>Created by <a href="../index.html">Ryo Ishizuka</a></p>
             <p id="bugStatus">Status: <strong>eprinttype (arXiv) detection bug</strong> — Fixed on 30 Oct 2025</p>
+            <p id="featureUpdate">Update: <strong>Supports pasting an entire .bbl file (no manual trimming needed), and converts both bbl/.bib to bibitem</strong> — Updated on 09 Apr 2026</p>
             <p id="publishedDate">Published: 03 Dec 2023</p>
         </div>
     </div>
 
     <script>
-        let labelLengthAll = 0;
-        let labelLongest = ``;
+        const copyTextElement = document.getElementById("copyText");
+        const bibliographyTemplate = copyTextElement.value;
 
         function getText() {
-            var text = document.getElementById("inputText").value;
-            var entries = text.split('\\endentry'); // テキストを\endentryで区切る
-            var convertedText = '';
-            for (var i = 0; i < entries.length; i++) {
-                if (entries[i].trim() !== '') {
-                    convertedText += convertToBibitem(entries[i] + '\\endentry'); // 各エントリに対してconvertToBibitemを適用
-                }
-            }
-            document.getElementById("displayText").value = convertedText; // 変換した文字列を表示
+            const text = document.getElementById("inputText").value;
+            const detectedFormat = detectInputFormat(text);
+            let entries = [];
 
-            // labelLongestの値をHTML要素に出力
-            document.getElementById("copyText").value = document.getElementById("copyText").value.replace('LONGEST LABEL', labelLongest);
+            if (detectedFormat === 'bbl') {
+                entries = parseBblEntries(text);
+            } else if (detectedFormat === 'bib') {
+                entries = parseBibEntries(text);
+            } else {
+                document.getElementById("displayText").value = 'Could not detect input format. Please paste bbl (\\entry...\\endentry) or .bib (@article{...}).';
+                document.getElementById("detectedFormat").textContent = 'Detected format: unknown';
+                updateBibliographyTemplate('Label');
+                return;
+            }
+
+            const convertedText = entries.map(convertEntryToBibitem).join('');
+            const longestLabel = entries.reduce((longest, entry) => {
+                const current = entry.label || '';
+                return current.length > longest.length ? current : longest;
+            }, 'Label');
+
+            document.getElementById("displayText").value = convertedText;
+            document.getElementById("detectedFormat").textContent = `Detected format: ${detectedFormat}`;
+            updateBibliographyTemplate(longestLabel || 'Label');
+        }
+
+        function updateBibliographyTemplate(label) {
+            copyTextElement.value = bibliographyTemplate.replace('LONGEST LABEL', label);
         }
 
         // テキストエリアの内容を削除するボタン
         function refreshText() {
             document.getElementById("inputText").value = '';
+            document.getElementById("displayText").value = '';
+            document.getElementById("detectedFormat").textContent = 'Detected format: (not translated yet)';
+            updateBibliographyTemplate('LONGEST LABEL');
         }
 
         // 出力された内容をクリップボードにコピーする関数
@@ -178,268 +199,472 @@
         }
 
         // プレーンテキストから特定の情報を抽出してBibitem形式の文字列に変換する関数
-        function convertToBibitem(text) {
+        function detectInputFormat(text) {
+            if (/\\entry\{/.test(text) && /\\endentry/.test(text)) {
+                return 'bbl';
+            }
+            if (/^\s*@\w+\s*[({]/m.test(text)) {
+                return 'bib';
+            }
+            return 'unknown';
+        }
 
-            // エントリータイプの抽出
-            const entryTypeRegex = /\\entry{.*?}{(.*?)}/;
-            const entryTypeMatch = entryTypeRegex.exec(text);
-            const entryType = entryTypeMatch ? entryTypeMatch[1] : '';
+        function normalizeFieldValue(value) {
+            if (!value) {
+                return '';
+            }
+            let normalized = value.trim();
+            normalized = normalized.replace(/\\bibrangedash/g, '--');
+            normalized = normalized.replace(/\\textbackslash\s*/g, '\\');
+            normalized = normalized.replace(/\\\$/g, '$');
+            normalized = normalized.replace(/\\textquoteright/g, "'");
+            normalized = normalized.replace(/[{}]/g, '');
+            return normalized.trim();
+        }
 
-            // ラベル情報の抽出
-            const labelRegex = /\\field{labelalpha}{(.*?)}\n/;
-            const labelMatch = labelRegex.exec(text);
-            const label = labelMatch ? labelMatch[1] : '';
+        function getArxivInfo(entry) {
+            const eprinttypeNormalized = normalizeFieldValue(entry.eprinttype || entry.archiveprefix).toLowerCase();
+            const url = normalizeFieldValue(entry.url || '');
+            const eprint = normalizeFieldValue(entry.eprint || entry.number || '');
 
-            // ラベルの文字列の長さを取得
-            const labelLength = label.length;
-
-            // labelLengthがlabelLengthAllの最後の要素より大きい場合のみ、labelLengthをlabelLengthAll配列に追加
-            // labelLengthがlabelMaxLengthより大きい場合のみ、labelMaxLengthをlabelLengthで更新
-            if (labelLength > labelLengthAll) {
-                labelLengthAll = labelLength;
-                labelLongest = `${label}`;
+            let arxivId = eprint;
+            if (!arxivId) {
+                const arxivUrlMatch = /https?:\/\/arxiv\.org\/(?:abs|pdf)\/([^?#]+)/i.exec(url);
+                if (arxivUrlMatch) {
+                    arxivId = arxivUrlMatch[1].replace(/\.pdf$/i, '');
+                }
             }
 
+            const isArxiv = eprinttypeNormalized === 'arxiv' || /arxiv/i.test(entry.number || '') || /arxiv\.org/i.test(url);
+            return {
+                isArxiv,
+                arxivId,
+                url
+            };
+        }
 
-            // citationkey情報の抽出
-            const citationkeyRegex = /\\entry{(.*?)}/;
-            const citationkeyMatch = citationkeyRegex.exec(text);
-            const citationkey = citationkeyMatch ? citationkeyMatch[1] : '';
+        function formatPages(rawPages) {
+            const pages = normalizeFieldValue(rawPages);
+            if (!pages) {
+                return '';
+            }
+            if (pages.includes('--')) {
+                return pages.split('--').map(page => `{${page.trim()}}`).join('--');
+            }
+            return pages;
+        }
 
-            // \\name{author}{n}のnを取得
-            const nameRegex = /\\name{author}{(\d+)}/;
-            const nameMatch = nameRegex.exec(text);
-            const n = nameMatch ? parseInt(nameMatch[1]) : 0;
+        function formatAuthorFromBib(name) {
+            const cleaned = normalizeFieldValue(name);
+            if (!cleaned) {
+                return '';
+            }
 
-            // const authorsfamilyregex = /family={(.*?)},\n/g;
-            // const authorsfamilyMatch = text.match(authorsfamilyregex);
-            // console.log(matches);
+            let family = '';
+            let given = '';
+            if (cleaned.includes(',')) {
+                const parts = cleaned.split(',');
+                family = (parts[0] || '').trim();
+                given = (parts.slice(1).join(',') || '').trim();
+            } else {
+                const parts = cleaned.split(/\s+/).filter(Boolean);
+                family = parts.length ? parts[parts.length - 1] : '';
+                given = parts.slice(0, -1).join(' ');
+            }
 
+            const initials = given
+                .split(/[\s-]+/)
+                .filter(Boolean)
+                .map(token => `${token.replace(/\./g, '').charAt(0)}.`)
+                .join(' ')
+                .trim();
 
-            let authors = '';
-            for (let i = 0; i <= n - 1; i++) {
-                // 著者familyname情報の抽出
-                const authorfamilyregex = /family={(.*?)},\n/g;
-                const authorfamilyMatch = [...text.matchAll(authorfamilyregex)].map(match => match[1]);
-                let authorfamily = authorfamilyMatch ? authorfamilyMatch[i] : '';
-                if (authorfamily.includes('\\bibnamedelima')) {
-                    authorfamily = authorfamily.replace(/\\bibnamedelima/g, '');
-                }
-                if (authorfamily.includes('\\bibinithyphendelim')) {
-                    authorfamily = authorfamily.replace(/\\bibinithyphendelim /g, '-');
-                }
+            if (initials && family) {
+                return `\\au{${initials} ${family}}`;
+            }
+            if (family) {
+                return `\\au{${family}}`;
+            }
+            return `\\au{${cleaned}}`;
+        }
 
-                // 著者giveniname情報の抽出
-                const authorgiveniRegex = /giveni={(.*?)}/g;
-                const authorgiveniMatch = [...text.matchAll(authorgiveniRegex)].map(match => match[1]);
-                let authorgiveni = authorgiveniMatch ? authorgiveniMatch[i] : '';
-                // \\bibinitperiodを取り除く
-                if (authorgiveni.includes('\\bibinitperiod')) {
-                    authorgiveni = authorgiveni.replace(/\\bibinitperiod/g, '');
-                }
-                if (authorgiveni.includes('\\bibinithyphendelim')) {
-                    authorgiveni = authorgiveni.replace(/\\bibinithyphendelim /g, '-');
-                }
-                if (authorgiveni.includes('\\bibnamedelima')) {
-                    authorgiveni = authorgiveni.replace(/\\bibnamedelima/g, '');
-                }
-                if (authorgiveni.includes('\\bibinitdelim')) {
-                    authorgiveni = authorgiveni.replace(/\\bibinitdelim/g, '.');
-                }
+        function joinAuthors(authorList) {
+            if (!authorList.length) {
+                return '';
+            }
+            if (authorList.length === 1) {
+                return authorList[0];
+            }
+            if (authorList.length === 2) {
+                return `${authorList[0]} and ${authorList[1]}`;
+            }
+            return `${authorList.slice(0, -1).join(', ')}, and ${authorList[authorList.length - 1]}`;
+        }
 
-                authors += `\\au{${authorgiveni}. ${authorfamily}}`;
-                if (i < n - 2) {
-                    authors += ', ';
-                } else if (i === n - 2) {
-                    if (n === 2) {
-                        authors += ' and ';
-                    } else {
-                        authors += ', and ';
+        function parseBblEntries(text) {
+            const entryBlocks = [...text.matchAll(/\\entry\{[\s\S]*?\\endentry/g)].map(match => match[0]);
+            return entryBlocks.map((entryText) => {
+                const entryTypeMatch = /\\entry\{.*?\}\{(.*?)\}/.exec(entryText);
+                const citationkeyMatch = /\\entry\{(.*?)\}/.exec(entryText);
+                const labelMatch = /\\field\{labelalpha\}\{(.*?)\}/.exec(entryText);
+
+                const authorFamilies = [...entryText.matchAll(/family=\{(.*?)\},\r?\n/g)].map(match => match[1]);
+                const authorGiven = [...entryText.matchAll(/giveni=\{(.*?)\}/g)].map(match => match[1]);
+                const authorCountMatch = /\\name\{author\}\{(\d+)\}/.exec(entryText);
+                const authorCount = authorCountMatch ? parseInt(authorCountMatch[1], 10) : 0;
+
+                const formattedAuthors = [];
+                for (let i = 0; i < authorCount; i++) {
+                    const family = normalizeFieldValue((authorFamilies[i] || '')
+                        .replace(/\\bibnamedelima/g, '')
+                        .replace(/\\bibinithyphendelim\s*/g, '-'));
+                    const givenInitials = normalizeFieldValue((authorGiven[i] || '')
+                        .replace(/\\bibinitperiod/g, '')
+                        .replace(/\\bibinithyphendelim\s*/g, '-')
+                        .replace(/\\bibnamedelima/g, '')
+                        .replace(/\\bibinitdelim/g, '.'));
+
+                    if (givenInitials && family) {
+                        formattedAuthors.push(`\\au{${givenInitials}. ${family}}`);
+                    } else if (family) {
+                        formattedAuthors.push(`\\au{${family}}`);
                     }
                 }
+
+                const fieldValue = (name) => {
+                    const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    const regex = new RegExp(`\\\\field\\{${escapedName}\\}\\{([\\s\\S]*?)\\}`);
+                    const match = regex.exec(entryText);
+                    return match ? normalizeFieldValue(match[1]) : '';
+                };
+
+                const publisherMatch = /\\list\{publisher\}\{\d+\}\{%\r?\n\s*\{([\s\S]*?)\}%/.exec(entryText);
+
+                return {
+                    entryType: (entryTypeMatch ? entryTypeMatch[1] : '').toLowerCase(),
+                    citationkey: citationkeyMatch ? citationkeyMatch[1] : '',
+                    label: labelMatch ? labelMatch[1] : (citationkeyMatch ? citationkeyMatch[1] : 'Label'),
+                    authors: formattedAuthors,
+                    title: fieldValue('title'),
+                    journal: fieldValue('journaltitle'),
+                    volume: fieldValue('volume'),
+                    number: fieldValue('number'),
+                    year: fieldValue('year'),
+                    pages: fieldValue('pages'),
+                    publisher: publisherMatch ? normalizeFieldValue(publisherMatch[1]) : '',
+                    series: fieldValue('series'),
+                    booktitle: fieldValue('booktitle'),
+                    edition: fieldValue('edition'),
+                    url: (() => {
+                        const urlMatch = /\\verb\s+(http.*?)\r?\n/.exec(entryText);
+                        return urlMatch ? normalizeFieldValue(urlMatch[1]) : '';
+                    })(),
+                    eprinttype: fieldValue('eprinttype'),
+                    eprint: fieldValue('eprint'),
+                    archiveprefix: fieldValue('archiveprefix')
+                };
+            });
+        }
+
+        function splitBibAuthorList(authorField) {
+            const input = authorField || '';
+            const authors = [];
+            let current = '';
+            let depth = 0;
+            for (let i = 0; i < input.length; i++) {
+                const char = input[i];
+                if (char === '{') {
+                    depth++;
+                } else if (char === '}') {
+                    depth = Math.max(0, depth - 1);
+                }
+
+                if (depth === 0 && input.slice(i, i + 5).toLowerCase() === ' and ') {
+                    authors.push(current.trim());
+                    current = '';
+                    i += 4;
+                    continue;
+                }
+                current += char;
+            }
+            if (current.trim()) {
+                authors.push(current.trim());
+            }
+            return authors;
+        }
+
+        function parseBibValue(body, startIndex) {
+            const char = body[startIndex];
+            if (char === '{') {
+                let depth = 1;
+                let i = startIndex + 1;
+                let value = '';
+                while (i < body.length && depth > 0) {
+                    const c = body[i];
+                    if (c === '{') {
+                        depth++;
+                    } else if (c === '}') {
+                        depth--;
+                    }
+                    if (depth > 0) {
+                        value += c;
+                    }
+                    i++;
+                }
+                return { value, nextIndex: i };
             }
 
-            // タイトル情報の抽出
-            const titleRegex = /\\field{title}{(.*?)}\n/;
-            const titleMatch = titleRegex.exec(text);
-            let title = titleMatch ? `${titleMatch[1]}` : '';
-            // titleから中括弧を削除
-            if (title) {
-                if (title.includes('}')) {
-                    title = title.replace(/}/g, '');
+            if (char === '"') {
+                let i = startIndex + 1;
+                let value = '';
+                while (i < body.length) {
+                    const c = body[i];
+                    if (c === '"' && body[i - 1] !== '\\') {
+                        i++;
+                        break;
+                    }
+                    value += c;
+                    i++;
                 }
-                if (title.includes('{')) {
-                    title = title.replace(/{/g, '');
-                }
-            }
-            title = titleMatch ? `\\at{\\textit{${title}}}` : '';
-            // titleInfoから\textbackslashを削除
-            if (title.includes('\\textbackslash')) {
-                title = title.replace(/\\textbackslash /g, '\\');
-            }
-            if (title.includes('\\\$')) {
-                title = title.replace(/\\\$/g, '$');
-            }
-            if (title.includes('\\textquoteright')) {
-                title = title.replace(/\\textquoteright/g, '\'');
+                return { value, nextIndex: i };
             }
 
-            // ジャーナル情報の抽出
-            const journalRegex = /\\field{journaltitle}{(.*?)}\n/;
-            const journalMatch = journalRegex.exec(text);
-            let journal = journalMatch ? `${journalMatch[1]}` : '';
-            if (journal) {
-                if (journal.includes('}')) {
-                    journal = journal.replace(/}/g, '');
+            let i = startIndex;
+            let value = '';
+            while (i < body.length && body[i] !== ',') {
+                value += body[i];
+                i++;
+            }
+            return { value: value.trim(), nextIndex: i };
+        }
+
+        function parseBibFields(body) {
+            const fields = {};
+            let i = 0;
+
+            while (i < body.length) {
+                while (i < body.length && /[\s,]/.test(body[i])) {
+                    i++;
                 }
-                if (journal.includes('{')) {
-                    journal = journal.replace(/{/g, '');
+                if (i >= body.length) {
+                    break;
+                }
+
+                const nameStart = i;
+                while (i < body.length && /[A-Za-z0-9_:-]/.test(body[i])) {
+                    i++;
+                }
+                const fieldName = body.slice(nameStart, i).trim().toLowerCase();
+                if (!fieldName) {
+                    i++;
+                    continue;
+                }
+
+                while (i < body.length && /\s/.test(body[i])) {
+                    i++;
+                }
+                if (body[i] !== '=') {
+                    while (i < body.length && body[i] !== ',') {
+                        i++;
+                    }
+                    continue;
+                }
+                i++;
+
+                while (i < body.length && /\s/.test(body[i])) {
+                    i++;
+                }
+
+                const parsed = parseBibValue(body, i);
+                fields[fieldName] = parsed.value.trim();
+                i = parsed.nextIndex;
+                while (i < body.length && /\s/.test(body[i])) {
+                    i++;
+                }
+                if (body[i] === ',') {
+                    i++;
                 }
             }
-            journal = journalMatch ? `\\jt{${journal}}` : '';
 
-            // 巻情報の抽出
-            const volumeRegex = /\\field{volume}{(.*?)}\n/;
-            const volumeMatch = volumeRegex.exec(text);
-            let volumeInfo = volumeMatch ? `${volumeMatch[1]}` : '';
-            if (volumeInfo) {
-                if (volumeInfo.includes('}')) {
-                    volumeInfo = volumeInfo.replace(/}/g, '');
-                }
-                if (volumeInfo.includes('{')) {
-                    volumeInfo = volumeInfo.replace(/{/g, '');
-                }
+            return fields;
+        }
+
+        function extractPrimaryFamilyName(rawAuthor) {
+            const firstAuthor = splitBibAuthorList(rawAuthor || '')[0] || '';
+            const cleaned = normalizeFieldValue(firstAuthor);
+            if (!cleaned) {
+                return '';
             }
-            volumeInfo = volumeMatch ? `\\bvol{${volumeInfo}}` : '';
-
-            // 号情報の抽出
-            const numberRegex = /\\field{number}{(.*?)}\n/;
-            const numberMatch = numberRegex.exec(text);
-            let numberInfo = numberMatch ? `${numberMatch[1]}` : '';
-            if (numberInfo) {
-                if (numberInfo.includes('}')) {
-                    numberInfo = numberInfo.replace(/}/g, '');
-                }
-                if (numberInfo.includes('{')) {
-                    numberInfo = numberInfo.replace(/{/g, '');
-                }
+            if (cleaned.includes(',')) {
+                return (cleaned.split(',')[0] || '').trim();
             }
-            numberInfo = numberMatch ? `(${numberInfo})` : '';
+            const parts = cleaned.split(/\s+/).filter(Boolean);
+            return parts.length ? parts[parts.length - 1] : '';
+        }
 
-            // 年情報の抽出
-            const yearRegex = /\\field{year}{(.*?)}\n/;
-            const yearMatch = yearRegex.exec(text);
-            let yearInfo = yearMatch ? `${yearMatch[1]}` : '';
-            if (yearInfo) {
-                if (yearInfo.includes('}')) {
-                    yearInfo = yearInfo.replace(/}/g, '');
+        function toAsciiLetters(input) {
+            return (input || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^A-Za-z]/g, '');
+        }
+
+        function buildBibLabelBase(entry) {
+            const familySeed = toAsciiLetters(entry.primaryFamily || '');
+            const keySeed = toAsciiLetters(entry.citationkey || '');
+            const alphaSeed = familySeed || keySeed || 'Ref';
+            const alphaRaw = alphaSeed.slice(0, 3) || 'Ref';
+            const alpha = `${alphaRaw.charAt(0).toUpperCase()}${alphaRaw.slice(1).toLowerCase()}`;
+
+            const yearMatch = /\d{4}/.exec(entry.year || '');
+            const yearSuffix = yearMatch ? yearMatch[0].slice(-2) : '';
+            return `${alpha}${yearSuffix}`;
+        }
+
+        function withGeneratedBibLabels(entries) {
+            const labelCounts = {};
+            return entries.map((entry) => {
+                const base = buildBibLabelBase(entry);
+                const index = labelCounts[base] || 0;
+                labelCounts[base] = index + 1;
+
+                let suffix = '';
+                if (index > 0 && index <= 26) {
+                    suffix = String.fromCharCode(96 + index);
+                } else if (index > 26) {
+                    suffix = `${index}`;
                 }
-                if (yearInfo.includes('{')) {
-                    yearInfo = yearInfo.replace(/{/g, '');
+
+                return {
+                    ...entry,
+                    label: `${base}${suffix}`
+                };
+            });
+        }
+
+        function parseBibEntries(text) {
+            const entries = [];
+            let i = 0;
+
+            while (i < text.length) {
+                const at = text.indexOf('@', i);
+                if (at === -1) {
+                    break;
                 }
+
+                let j = at + 1;
+                while (j < text.length && /[A-Za-z]/.test(text[j])) {
+                    j++;
+                }
+                const entryType = text.slice(at + 1, j).trim().toLowerCase();
+                while (j < text.length && /\s/.test(text[j])) {
+                    j++;
+                }
+                if (j >= text.length || (text[j] !== '{' && text[j] !== '(')) {
+                    i = at + 1;
+                    continue;
+                }
+
+                const open = text[j];
+                const close = open === '{' ? '}' : ')';
+                j++;
+
+                let key = '';
+                while (j < text.length && text[j] !== ',') {
+                    key += text[j];
+                    j++;
+                }
+                key = key.trim();
+                if (text[j] === ',') {
+                    j++;
+                }
+
+                let depth = 1;
+                let body = '';
+                while (j < text.length && depth > 0) {
+                    const c = text[j];
+                    if (c === open) {
+                        depth++;
+                    } else if (c === close) {
+                        depth--;
+                    }
+                    if (depth > 0) {
+                        body += c;
+                    }
+                    j++;
+                }
+
+                const fields = parseBibFields(body);
+                const authors = splitBibAuthorList(fields.author || '').map(formatAuthorFromBib).filter(Boolean);
+                const primaryFamily = extractPrimaryFamilyName(fields.author || '');
+
+                entries.push({
+                    entryType,
+                    citationkey: key,
+                    label: key || 'Label',
+                    primaryFamily,
+                    authors,
+                    title: normalizeFieldValue(fields.title || ''),
+                    journal: normalizeFieldValue(fields.journal || fields.journaltitle || ''),
+                    volume: normalizeFieldValue(fields.volume || ''),
+                    number: normalizeFieldValue(fields.number || ''),
+                    year: normalizeFieldValue(fields.year || ''),
+                    pages: normalizeFieldValue(fields.pages || ''),
+                    publisher: normalizeFieldValue(fields.publisher || ''),
+                    series: normalizeFieldValue(fields.series || ''),
+                    booktitle: normalizeFieldValue(fields.booktitle || ''),
+                    edition: normalizeFieldValue(fields.edition || ''),
+                    url: normalizeFieldValue(fields.url || ''),
+                    eprinttype: normalizeFieldValue(fields.eprinttype || ''),
+                    eprint: normalizeFieldValue(fields.eprint || ''),
+                    archiveprefix: normalizeFieldValue(fields.archiveprefix || '')
+                });
+
+                i = j;
             }
-            yearInfo = yearMatch ? `(\\yr{${yearInfo}})` : '';
 
-            // ページ情報の抽出
-            const pagesRegex = /\\field{pages}{(.*?)}\n/;
-            const pagesMatch = pagesRegex.exec(text);
-            let pagesInfo = '';
-            let pages = '';
-            if (pagesMatch) {
-                if (pagesMatch[1].includes('\\bibrangedash')) {
-                    pages = pagesMatch[1].split('\\bibrangedash').map(page => `{${page.trim()}}`).join('--'); // bibrangedashを削除してからハイフンを追加
-                } else {
-                    pages = `${pagesMatch[1]}`;
-                }
-            }
-            pagesInfo = pages ? `\\pg{${pages}}` : '';
+            return withGeneratedBibLabels(entries);
+        }
 
-            // 出版社情報の抽出
-            const publisherRegex = /\\list{publisher}{\d+}{%\n        {([\s\S]*?)}%/;
-            const publisherMatch = publisherRegex.exec(text);
-            const publisherInfo = publisherMatch ? `\\publ{${publisherMatch[1]}}` : '';
+        function convertEntryToBibitem(entry) {
+            const entryType = (entry.entryType || '').toLowerCase();
+            const citationkey = entry.citationkey || '';
+            const label = entry.label || citationkey || 'Label';
+            const authors = joinAuthors(entry.authors || []);
 
-            // if (publisherInfo) {
-            //     console.log(publisherInfo);
-            // }else{
-            //     console.log("no publisher");
-            // }
-
-            // シリーズ情報の抽出
-            const seriesRegex = /\\field{series}{(.*?)}\n/;
-            const seriesMatch = seriesRegex.exec(text);
-            let seriesInfo = seriesMatch ? `${seriesMatch[1]}` : '';
-            if (seriesInfo) {
-                if (seriesInfo.includes('}')) {
-                    seriesInfo = seriesInfo.replace(/}/g, '');
-                }
-                if (seriesInfo.includes('{')) {
-                    seriesInfo = seriesInfo.replace(/{/g, '');
-                }
-            }
-            seriesInfo = seriesMatch ? `\\series{${seriesInfo}}` : '';
-
-            //booktitle情報の抽出
-            const booktitleRegex = /\\field{booktitle}{(.*?)}\n/;
-            const booktitleMatch = booktitleRegex.exec(text);
-            let booktitleInfo = booktitleMatch ? `${booktitleMatch[1]}` : '';
-            if (booktitleInfo) {
-                if (booktitleInfo.includes('}')) {
-                    booktitleInfo = booktitleInfo.replace(/}/g, '');
-                }
-                if (booktitleInfo.includes('{')) {
-                    booktitleInfo = booktitleInfo.replace(/{/g, '');
-                }
-            }
-            booktitleInfo = booktitleMatch ? `\\bt{${booktitleInfo}}` : '';
-
-            // edition情報の抽出
-            const editionRegex = /\\field{edition}{(.*?)}\n/;
-            const editionMatch = editionRegex.exec(text);
-            const editionInfo = editionMatch ? `\\ed{${editionMatch[1]}}` : '';
-
-            // url情報の抽出
-            const urlRegex = /\\verb (http.*?)\n/;
-            const urlMatch = urlRegex.exec(text);
-            const url = urlMatch ? `${urlMatch[1]}` : '';
-            const urlInfo = urlMatch ? `\\url{${urlMatch[1]}}` : '';
-
-            // eprinttype情報の抽出
-            const eprinttypeRegex = /\\field{eprinttype}{(.*?)}\n/;
-            const eprinttypeMatch = eprinttypeRegex.exec(text);
-            // 正常に比較できるように中括弧や余分な空白を取り除き小文字化して正規化する
-            let eprinttypeInfo = eprinttypeMatch ? `${eprinttypeMatch[1]}` : '';
-            if (eprinttypeInfo) {
-                eprinttypeInfo = eprinttypeInfo.replace(/[{}]/g, '').trim().toLowerCase();
-            }
-
-            // urlInfoからarxiv.orgのURLを抽出
-            const arxivUrlRegex = /(https?:\/\/arxiv\.org\/[^\/]*\/(.*))/;
-            const arxivUrlMatch = arxivUrlRegex.exec(url);
-            let arxivnumberInfo = '';
-            if (arxivUrlMatch) {
-                // URLの最後のスラッシュ以降を取得
-                const arxivNumber = arxivUrlMatch[2];
-                // arxivNumberをurlInfoのハイパーリンクとして設定
-                arxivnumberInfo = `arXiv:\\arxiv{\\href{${url}}{${arxivNumber}}}`;
-            } else {
-                arxivnumberInfo = null;
-            }
-
-
-
-            // Bibitemの生成
-            let bibitem = `\\bibitem[${label}]{${citationkey}}\n{${authors}}, ${title}`;
             if (!entryType) {
-                bibitem = 'Cannot Fined Entry';
+                return 'Cannot find entry type.\n\n';
             }
-            else if (entryType === 'book') {
+
+            if (citationkey === 'stacks-project') {
+                return '\\bibitem[Sta]{stacks-project}\n{\\au{The Stacks Project Authors}}, \\at{\\textit{Stacks Project}}. \\url{https://stacks.math.columbia.edu}.\n\n';
+            }
+            if (citationkey === 'Macaulay2') {
+                return '\\bibitem[Mac]{Macaulay2}\n{\\au{D. R. Grayson} and \\au{M. E. Stillman}}, \\at{\\textit{Macaulay2, a software system for research in algebraic geometry}}. Available at \\url{http://www2.macaulay2.com}.\n\n';
+            }
+
+            const title = entry.title ? `\\at{\\textit{${entry.title}}}` : '';
+            const journal = entry.journal ? `\\jt{${entry.journal}}` : '';
+            const volumeInfo = entry.volume ? `\\bvol{${entry.volume}}` : '';
+            const numberInfo = entry.number ? `(${entry.number})` : '';
+            const yearInfo = entry.year ? `(\\yr{${entry.year}})` : '';
+            const pagesInfo = entry.pages ? `\\pg{${formatPages(entry.pages)}}` : '';
+            const publisherInfo = entry.publisher ? `\\publ{${entry.publisher}}` : '';
+            const seriesInfo = entry.series ? `\\series{${entry.series}}` : '';
+            const booktitleInfo = entry.booktitle ? `\\bt{${entry.booktitle}}` : '';
+            const editionInfo = entry.edition ? `\\ed{${entry.edition}}` : '';
+            const urlInfo = entry.url ? `\\url{${entry.url}}` : '';
+            const arxivInfo = getArxivInfo(entry);
+
+            let bibitem = `\\bibitem[${label}]{${citationkey}}\n{${authors}}, ${title}`;
+
+            if (entryType === 'book') {
                 if (seriesInfo) {
                     bibitem += `, ${seriesInfo}`;
                 }
                 if (editionInfo) {
                     bibitem += `, ${editionInfo}`;
-                } else {
+                } else if (numberInfo) {
                     bibitem += `, ${numberInfo}`;
                 }
                 if (yearInfo) {
@@ -448,7 +673,7 @@
                 if (publisherInfo) {
                     bibitem += ` ${publisherInfo}`;
                 }
-            } else if (entryType === 'article' && eprinttypeInfo !== 'arxiv') {
+            } else if (entryType === 'article' && !arxivInfo.isArxiv) {
                 if (journal) {
                     bibitem += `, ${journal}`;
                 }
@@ -499,19 +724,17 @@
                 if (pagesInfo) {
                     bibitem += `, ${pagesInfo}`;
                 }
-            } else if (eprinttypeInfo === 'arxiv') {
-                bibitem += `, preprint,`;
+            } else if (arxivInfo.isArxiv) {
+                bibitem += ', preprint,';
                 if (yearInfo) {
                     bibitem += ` ${yearInfo}.`;
                 }
-                if (arxivnumberInfo) {
-                    bibitem += ` ${arxivnumberInfo}`;
+                if (arxivInfo.arxivId && arxivInfo.url) {
+                    bibitem += ` arXiv:\\arxiv{\\href{${arxivInfo.url}}{${arxivInfo.arxivId}}}`;
+                } else if (arxivInfo.arxivId) {
+                    bibitem += ` arXiv:\\arxiv{${arxivInfo.arxivId}}`;
                 }
-            } else if (citationkey === `stacks-project`) {
-                bibitem = `\\bibitem[Sta]{stacks-project}\n{\\au{The Stacks Project Authors}}, \\at{\\textit{Stacks Project}}. \\url{https://stacks.math.columbia.edu}`;
-            } else if (citationkey == `Macaulay2`) {
-                bibitem = `\\bibitem[Mac]{Macaulay2}\n{\\au{D. R. Grayson} and \\au{M. E. Stillman}}, \\at{\\textit{Macaulay2, a software system for research in algebraic geometry}}. Available at \\url{http://www2.macaulay2.com}`;
-            } else if (eprinttypeInfo !== 'arxiv' && entryType === 'misc') {
+            } else if (entryType === 'misc') {
                 if (yearInfo) {
                     bibitem += `, ${yearInfo}.`;
                 } else {
@@ -520,9 +743,28 @@
                 if (urlInfo) {
                     bibitem += ` ${urlInfo}`;
                 }
+            } else {
+                if (journal) {
+                    bibitem += `, ${journal}`;
+                }
+                if (volumeInfo) {
+                    bibitem += `, ${volumeInfo}`;
+                }
+                if (numberInfo) {
+                    bibitem += `${numberInfo}`;
+                }
+                if (yearInfo) {
+                    bibitem += ` ${yearInfo}`;
+                }
+                if (pagesInfo) {
+                    bibitem += ` ${pagesInfo}`;
+                }
+                if (!journal && urlInfo) {
+                    bibitem += `. ${urlInfo}`;
+                }
             }
-            bibitem += '.\n\n';
 
+            bibitem += '.\n\n';
             return bibitem;
         }
     </script>
