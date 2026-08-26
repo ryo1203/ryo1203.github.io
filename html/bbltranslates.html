@@ -55,6 +55,16 @@
             color: #222;
         }
 
+        .formatLabel {
+            opacity: 0.65;
+            transition: opacity 0.2s;
+        }
+
+        .formatLabel.active {
+            opacity: 1;
+            font-weight: bold;
+        }
+
         .switch {
             position: relative;
             display: inline-block;
@@ -144,12 +154,12 @@
         </p>
         <textarea id="inputText" rows="4" cols="50" placeholder="Paste your bbl or .bib content"></textarea>
         <div class="formatToggle">
-            <span>biblatex bbl 3.2</span>
-            <label class="switch" aria-label="Toggle biblatex bbl format version">
-                <input type="checkbox" id="bblFormatSwitch">
+            <span id="biberFormatLabel" class="formatLabel active">Biber (biblatex)</span>
+            <label class="switch" aria-label="Select Biber or BibTeX bbl format">
+                <input type="checkbox" id="bblFormatSwitch" role="switch" aria-checked="false">
                 <span class="slider"></span>
             </label>
-            <span>biblatex bbl 3.3</span>
+            <span id="bibtexFormatLabel" class="formatLabel">BibTeX (AMSRefs)</span>
         </div>
         <div class="buttonContainer">
             <button onclick="pasteFromClipboard()">Paste from Clipboard</button>
@@ -188,6 +198,7 @@
 
         <div class="footer">
             <p>Created by <a href="../index.html">Ryo Ishizuka</a></p>
+            <p id="featureUpdate3">Update: <strong>Enhanced support for .bbl files created by bibtex(AMSRefs)</strong> — Updated on 26 Aug 2026</p>
             <p id="bugStatus">Update: <strong>eprinttype (arXiv) detection bug</strong> — Fixed on 30 Oct 2025</p>
             <p id="featureUpdate">Update: <strong>Supports pasting an entire .bbl file (no manual trimming needed), and converts both bbl/.bib to bibitem</strong> — Updated on 09 Apr 2026</p>
             <p id="featureUpdate2">Update: <strong>Improved handling of different bbl format versions</strong> — Updated on 13 July 2026</p>
@@ -199,23 +210,56 @@
         const copyTextElement = document.getElementById("copyText");
         const bibliographyTemplate = copyTextElement.value;
         const bblFormatSwitch = document.getElementById("bblFormatSwitch");
+        const biberFormatLabel = document.getElementById("biberFormatLabel");
+        const bibtexFormatLabel = document.getElementById("bibtexFormatLabel");
 
-        function getBblFormatVersion() {
-            return bblFormatSwitch.checked ? '3.3' : '3.2';
+        function getSelectedBblFormat() {
+            return bblFormatSwitch.checked ? 'bibtex-bbl' : 'biber-bbl';
         }
+
+        function getBblFormatDisplayName(format) {
+            return format === 'bibtex-bbl' ? 'BibTeX (AMSRefs)' : 'Biber (biblatex)';
+        }
+
+        function updateFormatToggleUi() {
+            const isBibtex = bblFormatSwitch.checked;
+            biberFormatLabel.classList.toggle('active', !isBibtex);
+            bibtexFormatLabel.classList.toggle('active', isBibtex);
+            bblFormatSwitch.setAttribute('aria-checked', String(isBibtex));
+        }
+
+        bblFormatSwitch.addEventListener('change', updateFormatToggleUi);
+        updateFormatToggleUi();
 
         function getText() {
             const text = document.getElementById("inputText").value;
             const detectedFormat = detectInputFormat(text);
+            const selectedBblFormat = getSelectedBblFormat();
             let entries = [];
 
-            if (detectedFormat === 'bbl') {
-                entries = parseBblEntries(text, getBblFormatVersion());
-            } else if (detectedFormat === 'bib') {
+            if (detectedFormat === 'bib') {
                 entries = parseBibEntries(text);
+            } else if (detectedFormat === selectedBblFormat) {
+                entries = selectedBblFormat === 'biber-bbl'
+                    ? parseBiberBblEntries(text)
+                    : parseBibtexBblEntries(text);
+            } else if (detectedFormat === 'biber-bbl' || detectedFormat === 'bibtex-bbl') {
+                const selectedName = getBblFormatDisplayName(selectedBblFormat);
+                const detectedName = getBblFormatDisplayName(detectedFormat);
+                document.getElementById("displayText").value = `The selected format is ${selectedName}, but the input looks like ${detectedName}. Please change the switch and try again.`;
+                document.getElementById("detectedFormat").textContent = `Detected format: ${detectedName} (selection mismatch)`;
+                updateBibliographyTemplate('Label');
+                return;
             } else {
-                document.getElementById("displayText").value = 'Could not detect input format. Please paste bbl (\\entry...\\endentry) or .bib (@article{...}).';
+                document.getElementById("displayText").value = 'Could not detect input format. Please paste a Biber bbl (\\entry...\\endentry), an AMSRefs-style BibTeX bbl (\\bib{...}{...}{...}), or a .bib file (@article{...}).';
                 document.getElementById("detectedFormat").textContent = 'Detected format: unknown';
+                updateBibliographyTemplate('Label');
+                return;
+            }
+
+            if (!entries.length) {
+                document.getElementById("displayText").value = 'No bibliography entries could be parsed from the input.';
+                document.getElementById("detectedFormat").textContent = `Detected format: ${detectedFormat}`;
                 updateBibliographyTemplate('Label');
                 return;
             }
@@ -227,9 +271,9 @@
             }, 'Label');
 
             document.getElementById("displayText").value = convertedText;
-            document.getElementById("detectedFormat").textContent = detectedFormat === 'bbl'
-                ? `Detected format: bbl (${getBblFormatVersion()})`
-                : `Detected format: ${detectedFormat}`;
+            document.getElementById("detectedFormat").textContent = detectedFormat === 'bib'
+                ? 'Detected format: .bib'
+                : `Detected format: ${getBblFormatDisplayName(detectedFormat)} bbl`;
             updateBibliographyTemplate(longestLabel || 'Label');
         }
 
@@ -243,6 +287,7 @@
             document.getElementById("displayText").value = '';
             document.getElementById("detectedFormat").textContent = 'Detected format: (not translated yet)';
             bblFormatSwitch.checked = false;
+            updateFormatToggleUi();
             updateBibliographyTemplate('LONGEST LABEL');
         }
 
@@ -275,7 +320,10 @@
         // プレーンテキストから特定の情報を抽出してBibitem形式の文字列に変換する関数
         function detectInputFormat(text) {
             if (/\\entry\{/.test(text) && /\\endentry/.test(text)) {
-                return 'bbl';
+                return 'biber-bbl';
+            }
+            if (/\\bib\s*\{[\s\S]*?\}\s*\{[\s\S]*?\}\s*\{/.test(text)) {
+                return 'bibtex-bbl';
             }
             if (/^\s*@\w+\s*[({]/m.test(text)) {
                 return 'bib';
@@ -289,10 +337,10 @@
             }
             let normalized = value.trim();
             normalized = normalized.replace(/\\bibrangedash/g, '--');
+            normalized = normalized.replace(/\\ndash/g, '--');
             normalized = normalized.replace(/\\textbackslash\s*/g, '\\');
             normalized = normalized.replace(/\\\$/g, '$');
             normalized = normalized.replace(/\\textquoteright/g, "'");
-            normalized = normalized.replace(/[{}]/g, '');
             return normalized.trim();
         }
 
@@ -324,28 +372,135 @@
             return depth === 0 ? { value, nextIndex: i } : null;
         }
 
-        function extractBblFieldValue(entryText, fieldName, useBalancedParsing) {
-            if (useBalancedParsing) {
-                const marker = `\\field{${fieldName}}{`;
-                const startIndex = entryText.indexOf(marker);
-                if (startIndex === -1) {
-                    return '';
-                }
+        function readBracedArguments(text, startIndex, argumentCount) {
+            const values = [];
+            let i = startIndex;
 
-                const extracted = extractBalancedBracedValue(entryText, startIndex + marker.length - 1);
-                return extracted ? normalizeFieldValue(extracted.value) : '';
+            for (let argumentIndex = 0; argumentIndex < argumentCount; argumentIndex++) {
+                while (i < text.length && /\s/.test(text[i])) {
+                    i++;
+                }
+                if (text[i] !== '{') {
+                    return null;
+                }
+                const extracted = extractBalancedBracedValue(text, i);
+                if (!extracted) {
+                    return null;
+                }
+                values.push(extracted.value);
+                i = extracted.nextIndex;
             }
 
+            return { values, nextIndex: i };
+        }
+
+        function extractBblFieldValue(entryText, fieldName) {
+            const marker = `\\field{${fieldName}}{`;
+            const startIndex = entryText.indexOf(marker);
+            if (startIndex === -1) {
+                return '';
+            }
+
+            const extracted = extractBalancedBracedValue(entryText, startIndex + marker.length - 1);
+            return extracted ? normalizeFieldValue(extracted.value) : '';
+        }
+
+        function extractBiberVerbValue(entryText, fieldName) {
             const escapedName = fieldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            const regex = new RegExp(`\\\\field\\{${escapedName}\\}\\{([\\s\\S]*?)\\}`);
+            const regex = new RegExp(`\\\\verb\\{${escapedName}\\}\\s*\\r?\\n\\s*\\\\verb\\s+([^\\r\\n]*)`);
             const match = regex.exec(entryText);
             return match ? normalizeFieldValue(match[1]) : '';
+        }
+
+        function extractBiberListValue(entryText, fieldName) {
+            const marker = `\\list{${fieldName}}`;
+            const startIndex = entryText.indexOf(marker);
+            if (startIndex === -1) {
+                return '';
+            }
+
+            const args = readBracedArguments(entryText, startIndex + marker.length, 2);
+            if (!args) {
+                return '';
+            }
+            const firstValueStart = args.values[1].indexOf('{');
+            if (firstValueStart === -1) {
+                return '';
+            }
+            const extracted = extractBalancedBracedValue(args.values[1], firstValueStart);
+            return extracted ? normalizeFieldValue(extracted.value) : '';
+        }
+
+        function cleanBiberNamePart(value) {
+            return normalizeFieldValue(value || '')
+                .replace(/\\bibnamedelima/g, '')
+                .replace(/\\bibinithyphendelim\s*/g, '-')
+                .trim();
+        }
+
+        function extractBiberAuthors(entryText) {
+            const marker = '\\name{author}';
+            const startIndex = entryText.indexOf(marker);
+            if (startIndex === -1) {
+                return [];
+            }
+
+            const args = readBracedArguments(entryText, startIndex + marker.length, 3);
+            if (!args) {
+                return [];
+            }
+
+            const authorCount = parseInt(args.values[0], 10) || 0;
+            const namesBody = args.values[2];
+            const familyMatches = [...namesBody.matchAll(/family\s*=\s*\{/g)];
+            const authors = [];
+
+            for (let i = 0; i < familyMatches.length && i < authorCount; i++) {
+                const familyMatch = familyMatches[i];
+                const familyBraceIndex = familyMatch.index + familyMatch[0].lastIndexOf('{');
+                const familyValue = extractBalancedBracedValue(namesBody, familyBraceIndex);
+                if (!familyValue) {
+                    continue;
+                }
+
+                const nextFamilyIndex = i + 1 < familyMatches.length ? familyMatches[i + 1].index : namesBody.length;
+                const remainder = namesBody.slice(familyValue.nextIndex, nextFamilyIndex);
+                const givenMatch = /giveni\s*=\s*\{/.exec(remainder);
+                let givenInitials = '';
+                if (givenMatch) {
+                    const givenBraceIndex = givenMatch.index + givenMatch[0].lastIndexOf('{');
+                    const givenValue = extractBalancedBracedValue(remainder, givenBraceIndex);
+                    if (givenValue) {
+                        givenInitials = cleanBiberNamePart(givenValue.value)
+                            .replace(/\\bibinitperiod/g, '.')
+                            .replace(/\\bibinitdelim\s*/g, ' ')
+                            .trim();
+                    }
+                }
+
+                const family = cleanBiberNamePart(familyValue.value);
+                if (givenInitials && family) {
+                    authors.push(`\\au{${givenInitials} ${family}}`);
+                } else if (family) {
+                    authors.push(`\\au{${family}}`);
+                }
+            }
+
+            return authors;
         }
 
         function getArxivInfo(entry) {
             const eprinttypeNormalized = normalizeFieldValue(entry.eprinttype || entry.archiveprefix).toLowerCase();
             const url = normalizeFieldValue(entry.url || '');
             const eprint = normalizeFieldValue(entry.eprint || entry.number || '');
+            const arxivMetadata = [
+                eprinttypeNormalized,
+                entry.publisher,
+                entry.journal,
+                entry.number,
+                entry.note,
+                url
+            ].filter(Boolean).join(' ');
 
             let arxivId = eprint;
             if (!arxivId) {
@@ -354,8 +509,15 @@
                     arxivId = arxivUrlMatch[1].replace(/\.pdf$/i, '');
                 }
             }
+            if (!arxivId) {
+                const metadataIdMatch = /arxiv:\s*([^\s,}]+)/i.exec(arxivMetadata);
+                if (metadataIdMatch) {
+                    arxivId = metadataIdMatch[1];
+                }
+            }
+            arxivId = arxivId.replace(/^update:\s*/i, '').replace(/^arxiv:\s*/i, '');
 
-            const isArxiv = eprinttypeNormalized === 'arxiv' || /arxiv/i.test(entry.number || '') || /arxiv\.org/i.test(url);
+            const isArxiv = /arxiv/i.test(arxivMetadata);
             return {
                 isArxiv,
                 arxivId,
@@ -393,7 +555,7 @@
             }
 
             const initials = given
-                .split(/[\s-]+/)
+                .split(/[\s~-]+/)
                 .filter(Boolean)
                 .map(token => `${token.replace(/\./g, '').charAt(0)}.`)
                 .join(' ')
@@ -421,65 +583,132 @@
             return `${authorList.slice(0, -1).join(', ')}, and ${authorList[authorList.length - 1]}`;
         }
 
-        function parseBblEntries(text, bblFormatVersion) {
-            const useBalancedParsing = bblFormatVersion === '3.3';
+        function parseBiberBblEntries(text) {
             const entryBlocks = [...text.matchAll(/\\entry\{[\s\S]*?\\endentry/g)].map(match => match[0]);
             return entryBlocks.map((entryText) => {
                 const entryTypeMatch = /\\entry\{.*?\}\{(.*?)\}/.exec(entryText);
                 const citationkeyMatch = /\\entry\{(.*?)\}/.exec(entryText);
-                const labelMatch = extractBblFieldValue(entryText, 'labelalpha', useBalancedParsing);
-
-                const authorFamilies = [...entryText.matchAll(/family=\{(.*?)\},\r?\n/g)].map(match => match[1]);
-                const authorGiven = [...entryText.matchAll(/giveni=\{(.*?)\}/g)].map(match => match[1]);
-                const authorCountMatch = /\\name\{author\}\{(\d+)\}/.exec(entryText);
-                const authorCount = authorCountMatch ? parseInt(authorCountMatch[1], 10) : 0;
-
-                const formattedAuthors = [];
-                for (let i = 0; i < authorCount; i++) {
-                    const family = normalizeFieldValue((authorFamilies[i] || '')
-                        .replace(/\\bibnamedelima/g, '')
-                        .replace(/\\bibinithyphendelim\s*/g, '-'));
-                    const givenInitials = normalizeFieldValue((authorGiven[i] || '')
-                        .replace(/\\bibinitperiod/g, '')
-                        .replace(/\\bibinithyphendelim\s*/g, '-')
-                        .replace(/\\bibnamedelima/g, '')
-                        .replace(/\\bibinitdelim/g, '.'));
-
-                    if (givenInitials && family) {
-                        formattedAuthors.push(`\\au{${givenInitials}. ${family}}`);
-                    } else if (family) {
-                        formattedAuthors.push(`\\au{${family}}`);
-                    }
-                }
-
-                const fieldValue = (name) => extractBblFieldValue(entryText, name, useBalancedParsing);
-
-                const publisherMatch = /\\list\{publisher\}\{\d+\}\{%\r?\n\s*\{([\s\S]*?)\}%/.exec(entryText);
+                const labelMatch = extractBblFieldValue(entryText, 'labelalpha');
+                const fieldValue = (name) => extractBblFieldValue(entryText, name);
 
                 return {
                     entryType: (entryTypeMatch ? entryTypeMatch[1] : '').toLowerCase(),
                     citationkey: citationkeyMatch ? citationkeyMatch[1] : '',
                     label: labelMatch || (citationkeyMatch ? citationkeyMatch[1] : 'Label'),
-                    authors: formattedAuthors,
+                    authors: extractBiberAuthors(entryText),
                     title: fieldValue('title'),
                     journal: fieldValue('journaltitle'),
                     volume: fieldValue('volume'),
                     number: fieldValue('number'),
                     year: fieldValue('year'),
                     pages: fieldValue('pages'),
-                    publisher: publisherMatch ? normalizeFieldValue(publisherMatch[1]) : '',
+                    publisher: extractBiberListValue(entryText, 'publisher'),
                     series: fieldValue('series'),
                     booktitle: fieldValue('booktitle'),
                     edition: fieldValue('edition'),
-                    url: (() => {
-                        const urlMatch = /\\verb\s+(http.*?)\r?\n/.exec(entryText);
-                        return urlMatch ? normalizeFieldValue(urlMatch[1]) : '';
-                    })(),
+                    url: extractBiberVerbValue(entryText, 'url'),
                     eprinttype: fieldValue('eprinttype'),
-                    eprint: fieldValue('eprint'),
-                    archiveprefix: fieldValue('archiveprefix')
+                    eprint: fieldValue('eprint') || extractBiberVerbValue(entryText, 'eprint'),
+                    archiveprefix: fieldValue('archiveprefix'),
+                    note: fieldValue('note')
                 };
             });
+        }
+
+        function parseBblFieldPairs(body) {
+            const pairs = [];
+            let i = 0;
+
+            while (i < body.length) {
+                while (i < body.length && /[\s,]/.test(body[i])) {
+                    i++;
+                }
+                if (body[i] === '%') {
+                    while (i < body.length && body[i] !== '\n') {
+                        i++;
+                    }
+                    continue;
+                }
+
+                const nameStart = i;
+                while (i < body.length && /[A-Za-z0-9_:-]/.test(body[i])) {
+                    i++;
+                }
+                const name = body.slice(nameStart, i).toLowerCase();
+                if (!name) {
+                    i++;
+                    continue;
+                }
+
+                while (i < body.length && /\s/.test(body[i])) {
+                    i++;
+                }
+                if (body[i] !== '=') {
+                    while (i < body.length && body[i] !== ',' && body[i] !== '\n') {
+                        i++;
+                    }
+                    continue;
+                }
+                i++;
+                while (i < body.length && /\s/.test(body[i])) {
+                    i++;
+                }
+
+                const parsed = parseBibValue(body, i);
+                pairs.push({ name, value: parsed.value.trim() });
+                i = parsed.nextIndex;
+            }
+
+            return pairs;
+        }
+
+        function parseBibtexBblEntries(text) {
+            const entries = [];
+            const commandRegex = /\\bib\s*\{/g;
+            let match;
+
+            while ((match = commandRegex.exec(text)) !== null) {
+                const firstBraceIndex = match.index + match[0].lastIndexOf('{');
+                const args = readBracedArguments(text, firstBraceIndex, 3);
+                if (!args) {
+                    commandRegex.lastIndex = firstBraceIndex + 1;
+                    continue;
+                }
+
+                const [citationkey, entryType, body] = args.values;
+                const pairs = parseBblFieldPairs(body);
+                const values = (name) => pairs.filter(pair => pair.name === name).map(pair => pair.value);
+                const fieldValue = (name) => normalizeFieldValue(values(name)[0] || '');
+                const rawAuthors = values('author');
+
+                entries.push({
+                    entryType: normalizeFieldValue(entryType).toLowerCase(),
+                    citationkey: normalizeFieldValue(citationkey),
+                    label: normalizeFieldValue(citationkey) || 'Label',
+                    primaryFamily: extractPrimaryFamilyName(rawAuthors[0] || ''),
+                    familyNames: rawAuthors.map(author => extractPrimaryFamilyName(author)).filter(Boolean),
+                    authors: rawAuthors.map(formatAuthorFromBib).filter(Boolean),
+                    title: fieldValue('title'),
+                    journal: fieldValue('journal') || fieldValue('journaltitle'),
+                    volume: fieldValue('volume'),
+                    number: fieldValue('number'),
+                    year: fieldValue('date') || fieldValue('year'),
+                    pages: fieldValue('pages'),
+                    publisher: fieldValue('publisher'),
+                    series: fieldValue('series'),
+                    booktitle: fieldValue('booktitle'),
+                    edition: fieldValue('edition'),
+                    url: fieldValue('url'),
+                    eprinttype: fieldValue('eprinttype'),
+                    eprint: fieldValue('eprint'),
+                    archiveprefix: fieldValue('archiveprefix'),
+                    note: fieldValue('note')
+                });
+
+                commandRegex.lastIndex = args.nextIndex;
+            }
+
+            return withGeneratedBibLabels(entries);
         }
 
         function splitBibAuthorList(authorField) {
@@ -636,6 +865,9 @@
 
         function toAsciiLetters(input) {
             return (input || '')
+                .replace(/\\[A-Za-z@]+/g, '')
+                .replace(/\\./g, '')
+                .replace(/[{}~]/g, '')
                 .normalize('NFD')
                 .replace(/[\u0300-\u036f]/g, '')
                 .replace(/[^A-Za-z]/g, '');
@@ -791,7 +1023,8 @@
                     url: normalizeFieldValue(fields.url || ''),
                     eprinttype: normalizeFieldValue(fields.eprinttype || ''),
                     eprint: normalizeFieldValue(fields.eprint || ''),
-                    archiveprefix: normalizeFieldValue(fields.archiveprefix || '')
+                    archiveprefix: normalizeFieldValue(fields.archiveprefix || ''),
+                    note: normalizeFieldValue(fields.note || '')
                 });
 
                 i = j;
@@ -889,8 +1122,14 @@
                 if (booktitleInfo) {
                     bibitem += `, ${booktitleInfo}`;
                 }
+                if (seriesInfo) {
+                    bibitem += `, ${seriesInfo}`;
+                }
                 if (volumeInfo) {
                     bibitem += `, ${volumeInfo}`;
+                }
+                if (publisherInfo) {
+                    bibitem += `, ${publisherInfo}`;
                 }
                 if (yearInfo) {
                     bibitem += `, ${yearInfo}`;
