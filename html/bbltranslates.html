@@ -159,7 +159,7 @@
                 <input type="checkbox" id="bblFormatSwitch" role="switch" aria-checked="false">
                 <span class="slider"></span>
             </label>
-            <span id="bibtexFormatLabel" class="formatLabel">BibTeX (AMSRefs)</span>
+            <span id="bibtexFormatLabel" class="formatLabel">BibTeX (.bst)</span>
         </div>
         <div class="buttonContainer">
             <button onclick="pasteFromClipboard()">Paste from Clipboard</button>
@@ -198,7 +198,7 @@
 
         <div class="footer">
             <p>Created by <a href="../index.html">Ryo Ishizuka</a></p>
-            <p id="featureUpdate3">Update: <strong>Enhanced support for .bbl files created by bibtex(AMSRefs)</strong> — Updated on 26 Aug 2026</p>
+            <p id="featureUpdate3">Update: <strong>Enhanced support for .bbl files created by BibTeX (alpha.bst-style / AMSRefs)</strong> — Updated on 26 Aug 2026</p>
             <p id="bugStatus">Update: <strong>eprinttype (arXiv) detection bug</strong> — Fixed on 30 Oct 2025</p>
             <p id="featureUpdate">Update: <strong>Supports pasting an entire .bbl file (no manual trimming needed), and converts both bbl/.bib to bibitem</strong> — Updated on 09 Apr 2026</p>
             <p id="featureUpdate2">Update: <strong>Improved handling of different bbl format versions</strong> — Updated on 13 July 2026</p>
@@ -218,7 +218,29 @@
         }
 
         function getBblFormatDisplayName(format) {
-            return format === 'bibtex-bbl' ? 'BibTeX (AMSRefs)' : 'Biber (biblatex)';
+            if (format === 'bibtex-alpha-bbl') {
+                return 'BibTeX (alpha.bst-style)';
+            }
+            if (format === 'bibtex-classic-bbl') {
+                return 'BibTeX (classic .bst)';
+            }
+            if (format === 'bibtex-amsrefs-bbl') {
+                return 'BibTeX (AMSRefs)';
+            }
+            return format === 'bibtex-bbl' ? 'BibTeX (.bst)' : 'Biber (biblatex)';
+        }
+
+        function isBibtexBblFormat(format) {
+            return format === 'bibtex-alpha-bbl'
+                || format === 'bibtex-classic-bbl'
+                || format === 'bibtex-amsrefs-bbl';
+        }
+
+        function formatMatchesSelection(detectedFormat, selectedFormat) {
+            if (selectedFormat === 'biber-bbl') {
+                return detectedFormat === 'biber-bbl';
+            }
+            return selectedFormat === 'bibtex-bbl' && isBibtexBblFormat(detectedFormat);
         }
 
         function updateFormatToggleUi() {
@@ -239,11 +261,15 @@
 
             if (detectedFormat === 'bib') {
                 entries = parseBibEntries(text);
-            } else if (detectedFormat === selectedBblFormat) {
-                entries = selectedBblFormat === 'biber-bbl'
-                    ? parseBiberBblEntries(text)
-                    : parseBibtexBblEntries(text);
-            } else if (detectedFormat === 'biber-bbl' || detectedFormat === 'bibtex-bbl') {
+            } else if (formatMatchesSelection(detectedFormat, selectedBblFormat)) {
+                if (detectedFormat === 'biber-bbl') {
+                    entries = parseBiberBblEntries(text);
+                } else if (detectedFormat === 'bibtex-amsrefs-bbl') {
+                    entries = parseBibtexBblEntries(text);
+                } else {
+                    entries = parseClassicBibtexBblEntries(text);
+                }
+            } else if (detectedFormat === 'biber-bbl' || isBibtexBblFormat(detectedFormat)) {
                 const selectedName = getBblFormatDisplayName(selectedBblFormat);
                 const detectedName = getBblFormatDisplayName(detectedFormat);
                 document.getElementById("displayText").value = `The selected format is ${selectedName}, but the input looks like ${detectedName}. Please change the switch and try again.`;
@@ -251,7 +277,7 @@
                 updateBibliographyTemplate('Label');
                 return;
             } else {
-                document.getElementById("displayText").value = 'Could not detect input format. Please paste a Biber bbl (\\entry...\\endentry), an AMSRefs-style BibTeX bbl (\\bib{...}{...}{...}), or a .bib file (@article{...}).';
+                document.getElementById("displayText").value = 'Could not detect input format. Please paste a Biber bbl (\\entry...\\endentry), a classic BibTeX bbl (\\bibitem...), an AMSRefs-style BibTeX bbl (\\bib{...}{...}{...}), or a .bib file (@article{...}).';
                 document.getElementById("detectedFormat").textContent = 'Detected format: unknown';
                 updateBibliographyTemplate('Label');
                 return;
@@ -322,8 +348,14 @@
             if (/\\entry\{/.test(text) && /\\endentry/.test(text)) {
                 return 'biber-bbl';
             }
+            if (/^[ \t]*\\bibitem\s*\[/m.test(text) && /\\newblock\b/.test(text)) {
+                return 'bibtex-alpha-bbl';
+            }
+            if (/^[ \t]*\\bibitem(?:\s*\[|\s*\{)/m.test(text)) {
+                return 'bibtex-classic-bbl';
+            }
             if (/\\bib\s*\{[\s\S]*?\}\s*\{[\s\S]*?\}\s*\{/.test(text)) {
-                return 'bibtex-bbl';
+                return 'bibtex-amsrefs-bbl';
             }
             if (/^\s*@\w+\s*[({]/m.test(text)) {
                 return 'bib';
@@ -660,6 +692,77 @@
             }
 
             return pairs;
+        }
+
+        function parseClassicBibitemHeader(text, startIndex) {
+            const marker = '\\bibitem';
+            let i = startIndex + marker.length;
+            while (i < text.length && /\s/.test(text[i])) {
+                i++;
+            }
+
+            let label = '';
+            if (text[i] === '[') {
+                let braceDepth = 0;
+                const labelStart = ++i;
+                while (i < text.length) {
+                    if (text[i] === '{' && text[i - 1] !== '\\') {
+                        braceDepth++;
+                    } else if (text[i] === '}' && text[i - 1] !== '\\') {
+                        braceDepth = Math.max(0, braceDepth - 1);
+                    } else if (text[i] === ']' && braceDepth === 0) {
+                        break;
+                    }
+                    i++;
+                }
+                if (text[i] !== ']') {
+                    return null;
+                }
+                label = text.slice(labelStart, i).trim();
+                i++;
+            }
+
+            while (i < text.length && /\s/.test(text[i])) {
+                i++;
+            }
+            const citationkey = extractBalancedBracedValue(text, i);
+            if (!citationkey) {
+                return null;
+            }
+
+            return {
+                label,
+                citationkey: citationkey.value.trim(),
+                contentStart: citationkey.nextIndex
+            };
+        }
+
+        function parseClassicBibtexBblEntries(text) {
+            const itemMatches = [...text.matchAll(/^[ \t]*\\bibitem\b/gm)].map(match => ({
+                index: match.index + match[0].indexOf('\\bibitem')
+            }));
+            const bibliographyEnd = text.indexOf('\\end{thebibliography}');
+            const entries = [];
+
+            itemMatches.forEach((match, index) => {
+                const header = parseClassicBibitemHeader(text, match.index);
+                if (!header) {
+                    return;
+                }
+
+                const nextItemIndex = index + 1 < itemMatches.length
+                    ? itemMatches[index + 1].index
+                    : (bibliographyEnd === -1 ? text.length : bibliographyEnd);
+                const rawBibitem = text.slice(match.index, nextItemIndex).trim();
+                entries.push({
+                    entryType: 'formatted-bibitem',
+                    citationkey: header.citationkey,
+                    label: header.label || header.citationkey || 'Label',
+                    rawBibitem
+                });
+            });
+
+            return entries;
         }
 
         function parseBibtexBblEntries(text) {
@@ -1038,6 +1141,10 @@
             const citationkey = entry.citationkey || '';
             const label = entry.label || citationkey || 'Label';
             const authors = joinAuthors(entry.authors || []);
+
+            if (entry.rawBibitem) {
+                return `${entry.rawBibitem.trim()}\n\n`;
+            }
 
             if (!entryType) {
                 return 'Cannot find entry type.\n\n';
