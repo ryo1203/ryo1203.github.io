@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-This is e-upTeX, Version 3.141592653-p4.0.0-u1.28-220214-2.6 (utf8.uptex) (TeX Live 2022) (preloaded format=uplatex 2022.9.17)  23 JUN 2026 18:23
-=======
-This is e-upTeX, Version 3.141592653-p4.1.1-u1.30-230214-2.6 (utf8.uptex) (TeX Live 2024) (preloaded format=uplatex 2024.5.18)  16 JUN 2026 13:25
->>>>>>> be38ed7d68405374278631ca70cbed25d42bc344
+This is e-upTeX, Version 3.141592653-p4.1.1-u1.30-230214-2.6 (utf8.uptex) (TeX Live 2024) (preloaded format=uplatex 2024.5.18)  2 SEP 2026 15:30
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1097,30 +1093,30 @@ LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 224.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 226.
+
+Overfull \hbox (5.5008pt too wide) in paragraph at lines 226--227
+[]\T1/lmss/m/n/10 M. As-gharzadeh and \T1/lmss/bx/n/10 R. Ishizuka\T1/lmss/m/n/10 , ``\T1/lmss/m/sl/10 Ho-mo-log-i-cal de-tec-tion by per-fec-toid al-ge-bras\T1/lmss/m/n/10 '', []arXiv:2607.17801[],
+ []
+
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 228.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 230.
-
-Overfull \hbox (15.3499pt too wide) in paragraph at lines 230--231
-[]\T1/lmss/bx/n/10 R. Ishizuka \T1/lmss/m/n/10 and S. Yoshikawa, ``\T1/lmss/m/sl/10 A local-global cor-re-spon-dence for per-fec-toid pu-rity\T1/lmss/m/n/10 '', []arXiv:2604.25265[],
- []
-
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 232.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 234.
+
+Overfull \hbox (15.3499pt too wide) in paragraph at lines 234--235
+[]\T1/lmss/bx/n/10 R. Ishizuka \T1/lmss/m/n/10 and S. Yoshikawa, ``\T1/lmss/m/sl/10 A local-global cor-re-spon-dence for per-fec-toid pu-rity\T1/lmss/m/n/10 '', []arXiv:2604.25265[],
+ []
+
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 236.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 238.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 240.
-
-Overfull \hbox (29.48657pt too wide) in paragraph at lines 240--241
-[]\T1/lmss/bx/n/10 R. Ishizuka\T1/lmss/m/n/10 , ``\T1/lmss/m/sl/10 A higher al-ge-braic ap-proach to lift-ings of mod-ules over de-rived quo-tients\T1/lmss/m/n/10 '', []arXiv:2503.17964[],
- []
-
 [1
 
 ]
@@ -1128,6 +1124,11 @@ LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 242.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 244.
+
+Overfull \hbox (29.48657pt too wide) in paragraph at lines 244--245
+[]\T1/lmss/bx/n/10 R. Ishizuka\T1/lmss/m/n/10 , ``\T1/lmss/m/sl/10 A higher al-ge-braic ap-proach to lift-ings of mod-ules over de-rived quo-tients\T1/lmss/m/n/10 '', []arXiv:2503.17964[],
+ []
+
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 246.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
@@ -1135,13 +1136,9 @@ LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 250.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
-(Font)              No change on input line 268.
+(Font)              No change on input line 252.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
-(Font)              No change on input line 269.
-LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
-(Font)              No change on input line 270.
-LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
-(Font)              No change on input line 271.
+(Font)              No change on input line 254.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 272.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
@@ -1170,11 +1167,11 @@ LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 284.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 285.
- [2]
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 286.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 287.
+[2]
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 288.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
@@ -1213,17 +1210,25 @@ LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 305.
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 306.
- [3]
 LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
 (Font)              No change on input line 307.
+LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
+(Font)              No change on input line 308.
+ [3]
+LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
+(Font)              No change on input line 309.
+LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
+(Font)              No change on input line 310.
+LaTeX Font Info:    Kanji font shape `JY2/gt/m/it' undefined
+(Font)              No change on input line 311.
 LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
-(Font)              No change on input line 316.
+(Font)              No change on input line 320.
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <9> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 316.
+(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 320.
 LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
-(Font)              No change on input line 317.
+(Font)              No change on input line 321.
 LaTeX Font Info:    Kanji font shape `JY2/mc/m/it' undefined
-(Font)              No change on input line 318.
+(Font)              No change on input line 322.
  [4] (./CV.aux)
  ***********
 pLaTeX2e <2023-02-14u04>+1, based on
@@ -1245,8 +1250,4 @@ Here is how much of TeX's memory you used:
  929 hyphenation exceptions out of 8191
  129i,12n,129p,725b,1775s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-<<<<<<< HEAD
-Output written on CV.dvi (4 pages, 65560 bytes).
-=======
-Output written on CV.dvi (4 pages, 75260 bytes).
->>>>>>> be38ed7d68405374278631ca70cbed25d42bc344
+Output written on CV.dvi (4 pages, 76236 bytes).
